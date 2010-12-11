@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -8,12 +9,17 @@
 #include "AiActor.hpp"
 #include "Definitions.hpp"
 
-std::string names[] = { "You", "Amy Ameba", "Phagocyte", "Euglena", "P-Dub", "Steve", "Amoebia Pond", "Your gf"};
-sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::Color::Yellow, sf::Color(0,100,0), sf::Color(255,0,255), sf::Color(0,255,255),
-					   sf::Color::White };
+std::string names[] = { "You", "Amy Ameba", "Phagocyte", "Euglena",
+						"P-Dub", "Steve", "Amoebia Pond", "Your gf" };
+sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::Color::Yellow,
+					   sf::Color(0,100,0), sf::Color(255,0,255), sf::Color(0,255,255), sf::Color::White };
+std::string credits[] = {"Programmed by opatut", "Music: Where Am I? by hamsteralliance.com", "Font: TT-KP by Christophe Caignaert"};
+//std::string help[] = {"You are an ameba.", "There are other amebae.", "They will eat you.", "Try to eat them."};
+
 sf::RenderWindow app;
 sf::Font monofont;
 sf::Image thisisyou_image;
+sf::Music background_music;
 int game_mode = 0;
 
 
@@ -29,7 +35,7 @@ bool game() {
 	int num_actors = 8;
 	if(game_mode == 0) num_actors = 2;
 	if(game_mode == 1) num_actors = 4;
-	if(game_mode == 2) num_actors = 8;
+//	if(game_mode == 2) num_actors = 8;
 	bool actor_done = false;
 
 	PlayerActor* actor = new PlayerActor(0);
@@ -55,7 +61,7 @@ bool game() {
 			actor_label = new sf::Text("> " + world.GetActorById(i).GetName(), monofont, 14);
 		else
 			actor_label = new sf::Text("  " + world.GetActorById(i).GetName(), monofont, 14);
-		actor_label->SetPosition(15,10+20*i);
+		actor_label->SetPosition(15,WINDOW_HEIGHT/2-FIELD_SIZE/2+20*i);
 		actor_label->SetColor(world.GetActorById(i).GetColor());
 		actor_labels.push_back(actor_label);
 	}
@@ -139,8 +145,8 @@ bool menu() {
 
 	boost::ptr_vector<sf::Text> menu;
 	int active_entry = game_mode;
-	std::string entries[] = { "2 Player match", "4 Player match", "8 Player match", "Quit game" };
-	int num_entries = 4;
+	std::string entries[] = { "2 Player match", "4 Player match", "8 Player match", "Credits", "Quit game" };
+	int num_entries = 5;
 
 	for(int i = 0; i < num_entries; i++) {
 		sf::Text* t = new sf::Text(entries[i], monofont, 20);
@@ -148,10 +154,16 @@ bool menu() {
 	}
 
 	sf::Text title("AMEBOID", monofont, 120);
-	title.SetPosition(WINDOW_WIDTH/2 - title.GetRect().Width/2, WINDOW_HEIGHT/2 - title.GetRect().Height/2);
+	title.SetPosition(WINDOW_WIDTH/2 - title.GetRect().Width/2, WINDOW_HEIGHT/2 - title.GetRect().Height/2 - 50);
 
 	sf::Text surtitle("opatut presents", monofont, 30);
 	surtitle.SetPosition(WINDOW_WIDTH/2 - surtitle.GetRect().Width/2, WINDOW_HEIGHT/4);
+
+	sf::Text credits_label("", monofont, 20);
+	int credits_index = 0;
+	int credits_count = 3;
+	float credits_time = 0.f; // 3 .. 2,5 fade in / 2,5 .. 0,5 show / 0,5 .. 0 fade out
+	bool show_credits = false;
 
 	sf::Shape black_rect = sf::Shape::Rectangle(0,0,WINDOW_WIDTH, WINDOW_HEIGHT, sf::Color::Black);
 
@@ -171,9 +183,11 @@ bool menu() {
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
 					return false;
-				} else if(event.Key.Code == sf::Key::Return) {
+				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
 					game_mode = active_entry;
 					if(active_entry == 3)
+						show_credits = true;
+					else if(active_entry == 4)
 						return false;
 					else
 						return true;
@@ -198,7 +212,7 @@ bool menu() {
 				menu[i].SetStyle(sf::Text::Regular);
 				menu[i].SetColor(sf::Color(180,180,180));
 			}
-			menu[i].SetPosition(WINDOW_WIDTH / 2 - menu[i].GetRect().Width / 2, WINDOW_HEIGHT - menu.size()*40 - 20 + i*40);
+			menu[i].SetPosition(WINDOW_WIDTH / 2 - menu[i].GetRect().Width / 2, WINDOW_HEIGHT - menu.size()*40 - 40 + i*40);
 		}
 
 		rect_alpha -= time_diff*0.5;
@@ -206,6 +220,26 @@ bool menu() {
 			rect_alpha = 0;
 		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
 
+		if(show_credits) {
+			credits_time -= time_diff;
+			if(credits_time <= 0) {
+				credits_time = 3.f;
+				if(credits_index < credits_count) {
+					credits_label.SetString(credits[credits_index]);
+					credits_index++;
+					credits_label.SetPosition(WINDOW_WIDTH / 2 - credits_label.GetRect().Width/2, 10);
+				} else {
+					show_credits = false;
+					credits_index = 0;
+				}
+			}
+		}
+		if(show_credits) {
+			int alpha = 255;
+			if(credits_time > 2.5) alpha = 255 - (credits_time-2.5) / 0.5 * 255;
+			if(credits_time < 0.5) alpha = credits_time / 0.5 * 255;
+			credits_label.SetColor(sf::Color(255,255,255,alpha));
+		}
 
 		// DRAW
 		app.Clear();
@@ -214,6 +248,9 @@ bool menu() {
 		}
 		app.Draw(title);
 		app.Draw(surtitle);
+		if(show_credits) {
+			app.Draw(credits_label);
+		}
 		app.Draw(black_rect);
 		app.Display();
 	}
@@ -231,12 +268,19 @@ int main() {
 		exit(1);
 	}
 
+	if (!background_music.OpenFromFile("snd/game.ogg")) {
+		std::cerr << "Could not load music file. Exiting." << std::endl;
+		exit(1);
+	}
+
 	thisisyou_image.LoadFromFile("gfx/thisisyou.png");
 
 
 
-	// STATE LOOP
 
+	// STATE LOOP
+	background_music.SetLoop(true);
+	background_music.Play();
 	bool running = true;
 	while(running) {
 		if(!menu()) running = false;

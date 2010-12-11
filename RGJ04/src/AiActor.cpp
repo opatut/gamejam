@@ -65,19 +65,26 @@ bool AiActor::Evolve() {
 		task_c = 1;
 	}
 
-	if(task_a > task_b && task_a > task_c) {
+	if(true || task_a > task_b && task_a > task_c) {
 		std::cout << mName << " chooses to go to the center " << std::endl;
 		// TO THE CENTER
 		// get some point close to center and area
 		// get area's closest point
 		Point cl = GetClosestPoint(center);
 		// pick random adjacent point closer to center
-		click = cl + Point(0,-1);
+		while(click == cl || click.DistanceTo(center) >= cl.DistanceTo(center)) {
+			int r = rand()%4;
+			if(r == 0) click = cl+Point(-1, 0);
+			if(r == 1) click = cl+Point( 1, 0);
+			if(r == 2) click = cl+Point( 0,-1);
+			if(r == 3) click = cl+Point( 0, 1);
+		}
+
 	} else if (task_b > task_c) {
 		std::cout << mName << " chooses to increase its area " << std::endl;
 		// INCREASE AREA
 	} else {
-		std::cout << mName << " chooses to attack someone" << center_owner<< std::endl;
+		std::cout << mName << " chooses to attack someone" << std::endl;
 		// DECREASE OTHER'S AREA
 	}
 
