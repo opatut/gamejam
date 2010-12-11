@@ -1,14 +1,16 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "Area.hpp"
+#include "PlayerActor.hpp"
 
 int main() {    
 
 	sf::RenderWindow app;
 	app.Create(sf::VideoMode(800,600,32), "Le areamorph.", sf::Style::Close);
 
-	Area area1(Point(10,10));
+	PlayerActor actor(1);
+	actor.SetColor(sf::Color(0,255,0));
+	actor.InitializeAreas();
 
 
 	while(app.IsOpened()) {
@@ -16,12 +18,18 @@ int main() {
 		while(app.GetEvent(event)) {
 			if(event.Type == sf::Event::Closed) {
 				app.Close();
+			} else if(event.Type == sf::Event::KeyPressed) {
+				if(event.Key.Code == sf::Key::Escape) {
+					app.Close();
+				}
 			}
 		}
 
+		actor.Update(0);
+
 		app.Clear(sf::Color(0,0,0));
 
-		area1.Draw(app);
+		actor.Draw(app);
 
 		app.Display();
 	}

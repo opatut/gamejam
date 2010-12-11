@@ -10,6 +10,6 @@ Point::Point(int x, int y) {
 	Y = y;
 }
 
-const Point operator + (const Point &p2) {
+const Point Point::operator + (const Point &p2) {
 	return Point(X + p2.X, Y + p2.Y);
 }

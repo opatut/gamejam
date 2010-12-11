@@ -3,11 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Definitions.hpp"
 #include "Point.hpp"
 
 class Area {
 public:
-	Area();
+	Area(Point starting_position);
 	void Update(float time_diff);
 	void Draw(sf::RenderTarget& target);
 
