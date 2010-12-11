@@ -1,0 +1,5 @@
+*.bin
+*/bin/
+qtcreator-build/
+*/build/
+CMakeLists.txt.user
