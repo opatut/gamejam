@@ -14,6 +14,11 @@ int main() {
 	sf::RenderWindow app;
 	app.Create(sf::VideoMode(800,600,32), "AMEBOID - RedditGameJam 04 - by opatut", sf::Style::Close);
 
+	sf::Font monofont;
+	if(!monofont.LoadFromFile("fonts/TT-KP-RE.TTF")) {
+		std::cerr << "Could not load font file. Exiting." << std::endl;
+		exit(1);
+	}
 
 	// WORLD ETC.
 
@@ -43,8 +48,10 @@ int main() {
 	boost::ptr_vector<sf::Text> actor_labels;
 	sf::Text* actor_label;
 	for(int i = 0; i < num_actors; i++) {
-		actor_label = new sf::Text(world.GetActorById(i).GetName());
-		actor_label->SetCharacterSize(12);
+		if(i==0)
+			actor_label = new sf::Text("> " + world.GetActorById(i).GetName(), monofont, 16);
+		else
+			actor_label = new sf::Text("  " + world.GetActorById(i).GetName(), monofont, 16);
 		actor_label->SetPosition(15,10+15*i);
 		actor_label->SetColor(world.GetActorById(i).GetColor());
 		actor_labels.push_back(actor_label);
@@ -63,8 +70,7 @@ int main() {
 		clock.Reset();
 
 		if(actor_done) {
-			actor_labels[next_actor].SetStyle(sf::Text::Regular);
-			actor_labels[next_actor].SetString(world.GetActorById(next_actor).GetName());
+			actor_labels[next_actor].SetString("  " + world.GetActorById(next_actor).GetName());
 
 			next_actor++;
 			if(next_actor >= num_actors)
@@ -72,7 +78,6 @@ int main() {
 			time_to_action = .3f;
 			actor_done = false;
 
-			//actor_labels[next_actor].SetStyle(sf::Text::Bold);
 			actor_labels[next_actor].SetString("> " + world.GetActorById(next_actor).GetName());
 		} else if(time_to_action <= 0 && next_actor != 0) {
 			// let ai actor perform action
