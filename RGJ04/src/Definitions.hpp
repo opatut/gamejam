@@ -3,8 +3,9 @@
 
 #define BLOCKSIZE 20
 #define BORDERWIDTH 2
-#define WINDOW_WIDTH 800
+#define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
 #define FIELD_SIZE 500
+#define TIME_PER_ROUND 0.3f
 
 #endif // DEFINITIONS_HPP

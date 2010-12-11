@@ -1,4 +1,5 @@
 #include "Area.hpp"
+#include "World.hpp"
 #include <iostream>
 
 Area::Area(Point starting_position) {
@@ -129,4 +130,19 @@ Point Area::GetPointAt(std::vector<Point>::iterator i, int offset) {
 	}
 
 	return *i;
+}
+
+Point Area::ContactWithActor(int own_id) {
+	for(unsigned int i = 0; i < mPoints.size(); ++i) {
+		for(int x = -1; x <= 1; ++x) {
+			for(int y = -1; y <= 1; ++y) {
+				if(y!=0 || x!=0) {
+					int owner = World::get_mutable_instance().GetActorAtPoint(mPoints[i]+Point(x,y));
+					if(owner != own_id && owner != 0) {
+						return mPoints[i];
+					}
+				}
+			}
+		}
+	}
 }

@@ -19,6 +19,7 @@ public:
 
 	void AddPoint(Point p);
 	Point GetPointAt(std::vector<Point>::iterator i, int offset = 0);
+	Point ContactWithActor(int own_id);
 private:
 	sf::Vector2f mOffset;
 	//sf::Shape mShape;

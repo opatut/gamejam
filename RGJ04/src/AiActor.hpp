@@ -13,6 +13,9 @@ public:
 	void Update(float time_diff, sf::Vector2f offset);
 
 	bool Evolve();
+	Point ContactWithActor();
+private:
+	float mMode; // -1 = passive/defensive, 0 = normal, 1 = active/offensive
 };
 
 #endif // AIACTOR_HPP

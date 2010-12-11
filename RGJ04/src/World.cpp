@@ -1,7 +1,13 @@
 #include "World.hpp"
 #include <iostream>
 
-World::World(sf::RenderWindow* app) {
+World::World() {}
+
+void World::Reset() {
+	mActors.clear();
+}
+
+void World::SetWindow(sf::RenderWindow* app) {
 	mApp = app;
 }
 
@@ -86,4 +92,12 @@ Actor& World::GetActorById(int id) {
 		if(mActors[i].GetId() == id)
 			return mActors[i];
 	}
+}
+
+int World::GetActorAtPoint(const Point p) {
+	for(unsigned int i = 0; i < mActors.size(); ++i) {
+		if(mActors[i].GetClosestPoint(p).DistanceTo(p) == 0) // owns the point
+			return mActors[i].GetId();
+	}
+	return -1;
 }
