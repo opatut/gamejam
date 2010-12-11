@@ -13,6 +13,7 @@ sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::
 					   sf::Color::White };
 sf::RenderWindow app;
 sf::Font monofont;
+sf::Image thisisyou_image;
 int game_mode = 0;
 
 
@@ -63,7 +64,10 @@ bool game() {
 	debug.SetPosition(10, WINDOW_HEIGHT-24);
 
 
-
+	sf::Sprite thisisyou(thisisyou_image);
+	thisisyou.SetPosition(WINDOW_WIDTH/2 - FIELD_SIZE/2 - 33, WINDOW_HEIGHT/2 - FIELD_SIZE / 2 - 25);
+	//thisisyou.SetPosition(0,0);
+	float thisisyou_alpha = 1;
 
 	sf::Clock clock;
 	clock.Reset();
@@ -114,6 +118,9 @@ bool game() {
 		world.Update(0);
 
 		debug.SetString("FPS: " + boost::lexical_cast<std::string>(round(1.f/time_diff)));
+		thisisyou_alpha -= time_diff * 0.1;
+		if(thisisyou_alpha < 0) thisisyou_alpha = 0;
+		thisisyou.SetColor(sf::Color(255,255,255,255*thisisyou_alpha));
 
 		// DRAW
 		app.Clear(sf::Color(0,0,0));
@@ -121,6 +128,8 @@ bool game() {
 		for(unsigned int i = 0; i < actor_labels.size(); ++i) {
 			app.Draw(actor_labels[i]);
 		}
+		if(thisisyou_alpha > 0)
+			app.Draw(thisisyou);
 		app.Draw(debug);
 		app.Display();
 	}
@@ -221,6 +230,12 @@ int main() {
 		std::cerr << "Could not load font file. Exiting." << std::endl;
 		exit(1);
 	}
+
+	thisisyou_image.LoadFromFile("gfx/thisisyou.png");
+
+
+
+	// STATE LOOP
 
 	bool running = true;
 	while(running) {
