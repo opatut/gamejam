@@ -16,8 +16,12 @@ public:
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;
+
+	void AddPoint(Point p);
+	Point GetPointAt(std::vector<Point>::iterator i, int offset = 0);
 private:
-	sf::Shape mShape;
+	sf::Vector2f mOffset;
+	//sf::Shape mShape;
 	sf::Color mColor;
 	std::vector<Point> mPoints;
 };

@@ -39,6 +39,15 @@ Point Actor::GetClosestPoint(const Point p) {
 	return closest;
 }
 
+void Actor::Clicked(const Point p) {
+	for(unsigned int i = 0; i < mAreas.size(); ++i) {
+		if(mAreas[i].GetClosestPoint(p).DistanceTo(p) == 1) {
+			mAreas[i].AddPoint(p);
+		}
+	}
+
+}
+
 void Actor::SetColor(const sf::Color color) {
 	mColor = color;
 }

@@ -1,5 +1,6 @@
 #include "Point.hpp"
 #include <cstdlib>
+#include <math.h>
 
 Point::Point() {
 	X = 0;
@@ -17,4 +18,15 @@ const Point Point::operator + (const Point &p2) {
 
 int Point::DistanceTo(const Point &p) {
 	return abs(p.X - X) + abs(p.Y - Y);
+}
+
+float Point::RealDistanceTo(const Point &p) {
+	int dx = p.X - X;
+	int dy = p.Y - Y;
+
+	return sqrt(dx*dx+dy*dy);
+}
+
+bool Point::operator == (const Point &p2) {
+	return (p2.X == X && p2.Y == Y);
 }
