@@ -15,13 +15,15 @@ public:
 	void AddActor(Actor* actor, bool is_player = false);
 	void Update(float time_diff);
 	void Draw(sf::RenderTarget& target);
-	void Clicked(sf::Vector2i mouse_pos);
+	bool Clicked(sf::Vector2i mouse_pos);
 	sf::Vector2f GetOffset();
 
 	PlayerActor* GetPlayerActor();
 	void SetPlayerActor(PlayerActor* player_actor);
 
 	Point PointAt(sf::Vector2f pos);
+
+	Actor& GetActorById(int id);
 private:
 	boost::ptr_vector<Actor> mActors;
 	sf::RenderWindow* mApp;

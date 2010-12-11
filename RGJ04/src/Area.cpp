@@ -38,7 +38,7 @@ void Area::Draw(sf::RenderTarget& target) {
 		line.SetPosition(mOffset);
 		target.Draw(line);
 
-		sf::Shape circle = sf::Shape::Circle(mPoints[i].X*BLOCKSIZE, mPoints[i].Y*BLOCKSIZE, 2, sf::Color::Red);
+		sf::Shape circle = sf::Shape::Rectangle(mPoints[i].X*BLOCKSIZE - 2, mPoints[i].Y*BLOCKSIZE - 1, 3, 3, mColor);
 		circle.SetPosition(mOffset);
 		target.Draw(circle);
 	}

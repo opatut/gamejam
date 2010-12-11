@@ -59,9 +59,10 @@ void World::Draw(sf::RenderTarget& target) {
 }
 
 
-void World::Clicked(sf::Vector2i mouse_pos) {
+bool World::Clicked(sf::Vector2i mouse_pos) {
 	Point p = PointAt(sf::Vector2f(mouse_pos.x, mouse_pos.y));
 	mPlayerActor->Clicked(p);
+	return true;
 }
 
 sf::Vector2f World::GetOffset() {
@@ -79,4 +80,11 @@ void World::SetPlayerActor(PlayerActor* player_actor) {
 Point World::PointAt(sf::Vector2f pos) {
 	return Point( round((pos.x - GetOffset().x) / BLOCKSIZE),
 				  round((pos.y - GetOffset().y) / BLOCKSIZE));
+}
+
+Actor& World::GetActorById(int id) {
+	for(unsigned int i = 0; i < mActors.size(); ++i) {
+		if(mActors[i].GetId() == id)
+			return mActors[i];
+	}
 }

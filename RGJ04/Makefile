@@ -6,6 +6,8 @@ bake:
 
 bakerun: build bake run
 
+go: build bakerun
+
 run:
 	cd bin; ./game
 

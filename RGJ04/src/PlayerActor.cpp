@@ -8,7 +8,7 @@ void PlayerActor::InitializeAreas() {
 	mAreas.clear();
 	Area* a;
 
-	a = new Area(Point(mId*2, mId*2));
+	a = new Area(Point(2, 2));
 	a->SetColor(mColor);
 	mAreas.push_back(a);
 

@@ -25,6 +25,10 @@ void Actor::Draw(sf::RenderTarget& target) {
 	}
 }
 
+bool Actor::Evolve() {
+	return false;
+}
+
 Point Actor::GetClosestPoint(const Point p) {
 	Point closest;
 	int last_distance = 1000000;
@@ -54,4 +58,17 @@ void Actor::SetColor(const sf::Color color) {
 
 const sf::Color Actor::GetColor() const {
 	return mColor;
+}
+
+const int Actor::GetId() {
+	return mId;
+}
+
+
+void Actor::SetName(const std::string& name) {
+	mName = name;
+}
+
+const std::string& Actor::GetName() const {
+	return mName;
 }
