@@ -9,16 +9,27 @@ AiActor::AiActor(int id) {
 
 void AiActor::InitializeAreas() {
 	mAreas.clear();
-	Area* a;
+	Area* area;
 
-	Point p(2,2);
+	int a = 2;
+	int b = FIELD_SIZE/BLOCKSIZE/2;
+	int c = FIELD_SIZE/BLOCKSIZE-3;
 
-	if(mId == 1 || mId == 3) p.X = FIELD_SIZE/BLOCKSIZE - 3;
-	if(mId == 1 || mId == 2) p.Y = FIELD_SIZE/BLOCKSIZE - 3;
+	Point p(b,b);
 
-	a = new Area(p);
-	a->SetColor(mColor);
-	mAreas.push_back(a);
+	if(mId == 0) { p.X = a; p.Y = a; }
+	if(mId == 1) { p.X = a; p.Y = c; }
+	if(mId == 2) { p.X = c; p.Y = a; }
+	if(mId == 3) { p.X = c; p.Y = c; }
+	if(mId == 4) { p.X = a; p.Y = b; }
+	if(mId == 5) { p.X = c; p.Y = b; }
+	if(mId == 6) { p.X = b; p.Y = a; }
+	if(mId == 7) { p.X = b; p.Y = c; }
+
+
+	area = new Area(p);
+	area->SetColor(mColor);
+	mAreas.push_back(area);
 }
 
 

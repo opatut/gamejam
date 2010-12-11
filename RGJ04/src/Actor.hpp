@@ -20,7 +20,7 @@ public:
 
 	Point GetClosestPoint(const Point p);
 
-	void Clicked(const Point p);
+	bool Clicked(const Point p);
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;

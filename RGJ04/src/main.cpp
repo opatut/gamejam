@@ -7,8 +7,9 @@
 #include "AiActor.hpp"
 #include "Definitions.hpp"
 
-std::string names[] = { "You", "Amy the ameba", "Phagocyte", "Euglena"};
-sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::Color::Yellow };
+std::string names[] = { "You", "Amy Ameba", "Phagocyte", "Euglena", "P-Dub", "Steve", "Amoebia Pond", "Your gf"};
+sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::Color::Yellow, sf::Color(0,100,0), sf::Color(255,0,255), sf::Color(0,255,255),
+					   sf::Color::White };
 
 int main() {    
 	sf::RenderWindow app;
@@ -26,7 +27,7 @@ int main() {
 
 	float time_to_action = 0;
 	int next_actor = 0;
-	int num_actors = 4;
+	int num_actors = 8;
 	bool actor_done = false;
 
 	PlayerActor* actor = new PlayerActor(0);
@@ -75,7 +76,7 @@ int main() {
 			next_actor++;
 			if(next_actor >= num_actors)
 				next_actor = 0;
-			time_to_action = .3f;
+			time_to_action = .1f;
 			actor_done = false;
 
 			actor_labels[next_actor].SetString("> " + world.GetActorById(next_actor).GetName());

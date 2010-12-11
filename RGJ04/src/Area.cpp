@@ -33,12 +33,12 @@ void Area::Draw(sf::RenderTarget& target) {
 										 mPoints[i].Y * BLOCKSIZE,
 										 after.X * BLOCKSIZE,
 										 after.Y * BLOCKSIZE,
-										 1.f,
+										 3.f,
 										 mColor);
 		line.SetPosition(mOffset);
 		target.Draw(line);
 
-		sf::Shape circle = sf::Shape::Rectangle(mPoints[i].X*BLOCKSIZE - 2, mPoints[i].Y*BLOCKSIZE - 1, 3, 3, mColor);
+		sf::Shape circle = sf::Shape::Rectangle(mPoints[i].X*BLOCKSIZE - 4, mPoints[i].Y*BLOCKSIZE - 3, 7, 7, mColor);
 		circle.SetPosition(mOffset);
 		target.Draw(circle);
 	}
@@ -70,8 +70,6 @@ void Area::AddPoint(Point p) {
 	int first_pos = -1;
 	int last_pos = -1;
 
-
-
 	for(int i = 0; i < mPoints.size(); ++i) {
 		if(mPoints[i].DistanceTo(p) == 1) {
 			std::cout << " one at " << i << std::endl;
@@ -84,6 +82,7 @@ void Area::AddPoint(Point p) {
 	}
 
 	if (last_pos == -1) {
+		first_pos = -1;
 		for(int i = 0; i < mPoints.size(); ++i) {
 			if(mPoints[i].RealDistanceTo(p) < 2) {
 				std::cout << " two at " << i << std::endl;

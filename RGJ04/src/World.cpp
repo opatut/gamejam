@@ -61,8 +61,7 @@ void World::Draw(sf::RenderTarget& target) {
 
 bool World::Clicked(sf::Vector2i mouse_pos) {
 	Point p = PointAt(sf::Vector2f(mouse_pos.x, mouse_pos.y));
-	mPlayerActor->Clicked(p);
-	return true;
+	return mPlayerActor->Clicked(p);
 }
 
 sf::Vector2f World::GetOffset() {
