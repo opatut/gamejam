@@ -3,5 +3,8 @@
 
 #define BLOCKSIZE 20
 #define BORDERWIDTH 2
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+#define FIELD_SIZE 500
 
 #endif // DEFINITIONS_HPP

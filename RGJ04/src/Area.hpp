@@ -9,8 +9,10 @@
 class Area {
 public:
 	Area(Point starting_position);
-	void Update(float time_diff);
+	void Update(float time_diff, sf::Vector2f offset);
 	void Draw(sf::RenderTarget& target);
+
+	Point GetClosestPoint(const Point p);
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;

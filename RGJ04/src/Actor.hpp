@@ -13,8 +13,10 @@ public:
 
 	virtual void InitializeAreas();
 
-	virtual void Update(float time_diff) = 0;
+	virtual void Update(float time_diff, sf::Vector2f offset) = 0;
 	virtual void Draw(sf::RenderTarget& target);
+
+	Point GetClosestPoint(const Point p);
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;
@@ -23,7 +25,7 @@ protected:
 	boost::ptr_vector<Area> mAreas;
 	sf::Color mColor;
 
-	void UpdateAllAreas(float time_diff);
+	void UpdateAllAreas(float time_diff, sf::Vector2f offset);
 };
 
 #endif // ACTOR_HPP
