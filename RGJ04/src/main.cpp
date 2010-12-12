@@ -217,30 +217,33 @@ bool menu() {
 		float time_diff = clock.GetElapsedTime();
 		clock.Reset();
 
+		bool item_selected = false;
+
 		sf::Event event;
 		while(app.GetEvent(event)) {
 			if(event.Type == sf::Event::Closed) {
 				leaving = true;
 				leaving_value = false; // stop program
+			} else if(event.Type == sf::Event::MouseMoved) {
+				// set active entry by mouse
+				for(unsigned int i = 0; i < menu.size(); ++i) {
+					if(menu[i].GetRect().Contains(event.MouseMove.X,event.MouseMove.Y)) {
+						active_entry = i;
+					}
+				}
+			} else if(event.Type == sf::Event::MouseButtonPressed && event.MouseButton.Button == sf::Mouse::Left) {
+				for(unsigned int i = 0; i < menu.size(); ++i) {
+					if(menu[i].GetRect().Contains(event.MouseButton.X,event.MouseButton.Y)) {
+						active_entry = i;
+						item_selected = true;
+					}
+				}
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
 					leaving = true;
 					leaving_value = false;
 				} else if(event.Key.Code == sf::Key::M) {
 					ToggleMusic();
-				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
-					game_mode = active_entry;
-					if(active_entry == 3) {
-						ToggleMusic();
-					} else if(active_entry == 4) {
-						show_credits = true;
-					} else if(active_entry == 5) {
-						leaving = true;
-						leaving_value = false;
-					} else {
-						leaving = true;
-						leaving_value = true;
-					}
 				} else if(event.Key.Code == sf::Key::Down) {
 					active_entry++;
 					if(active_entry >= menu.size())
@@ -249,8 +252,26 @@ bool menu() {
 					active_entry--;
 					if(active_entry < 0)
 						active_entry = menu.size() - 1;
+				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
+					item_selected = true;
 				}
 			}
+		}
+
+		if(item_selected) {
+			game_mode = active_entry;
+			if(active_entry == 3) {
+				ToggleMusic();
+			} else if(active_entry == 4) {
+				show_credits = true;
+			} else if(active_entry == 5) {
+				leaving = true;
+				leaving_value = false;
+			} else {
+				leaving = true;
+				leaving_value = true;
+			}
+			item_selected = true;
 		}
 
 		// UPDATE
