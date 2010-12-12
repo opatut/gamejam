@@ -74,6 +74,10 @@ bool game() {
 	sf::Text debug("Debug label", monofont, 14);
 	debug.SetPosition(10, WINDOW_HEIGHT-24);
 
+	sf::Text myscore("0", monofont, 100);
+	myscore.SetPosition(WINDOW_WIDTH - (WINDOW_WIDTH/2-FIELD_SIZE/2) + 40, WINDOW_HEIGHT/2-FIELD_SIZE/2 - 30);
+	myscore.SetColor(sf::Color::White);
+
 
 	sf::Sprite thisisyou(thisisyou_image);
 	thisisyou.SetPosition(WINDOW_WIDTH/2 - FIELD_SIZE/2 - 33, WINDOW_HEIGHT/2 - FIELD_SIZE / 2 - 25);
@@ -137,6 +141,8 @@ bool game() {
 		world.Update(0);
 
 		debug.SetString("FPS: " + boost::lexical_cast<std::string>(round(1.f/time_diff)));
+		myscore.SetString(boost::lexical_cast<std::string>(world.GetActorById(0).GetScore()));
+
 		thisisyou_alpha -= time_diff * 0.1;
 		if(thisisyou_alpha < 0) thisisyou_alpha = 0;
 		thisisyou.SetColor(sf::Color(255,255,255,255*thisisyou_alpha));
@@ -170,6 +176,7 @@ bool game() {
 		if(thisisyou_alpha > 0)
 			app.Draw(thisisyou);
 		app.Draw(debug);
+		app.Draw(myscore);
 		app.Draw(black_rect);
 		app.Display();
 	}

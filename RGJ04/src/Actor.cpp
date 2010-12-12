@@ -93,6 +93,10 @@ bool Actor::Clicked(const Point p) {
 	return done;
 }
 
+const int Actor::GetScore() const {
+	return mScore;
+}
+
 void Actor::AddScore(int score) {
 	mScore += score;
 }

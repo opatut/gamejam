@@ -26,6 +26,7 @@ public:
 	bool IsPointInside(const Point p);
 
 	bool Clicked(const Point p);
+	const int GetScore() const;
 	void AddScore(int score);
 
 	std::string ToString(bool current);
