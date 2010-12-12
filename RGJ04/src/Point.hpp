@@ -10,6 +10,7 @@ public:
 	bool operator == (const Point &p2);
 	int DistanceTo(const Point &p);
 	float RealDistanceTo(const Point &p);
+	bool IsInField() const;
 
 };
 

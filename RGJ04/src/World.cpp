@@ -71,6 +71,17 @@ bool World::Clicked(sf::Vector2i mouse_pos) {
 		return false;
 }
 
+bool World::PointAdded(const Point p, int actor_id) {
+	Point po = p;
+	for(unsigned int i = 0; i < mActors.size(); ++i) {
+		if(mActors[i].GetId() != actor_id) {
+			if(mActors[i].PointOnPolygon(po)) {
+				mActors[i].RemovePoint(po);
+			}
+		}
+	}
+}
+
 sf::Vector2f World::GetOffset() {
 	return sf::Vector2f((WINDOW_WIDTH-FIELD_SIZE) / 2, (WINDOW_HEIGHT-FIELD_SIZE) / 2);
 }

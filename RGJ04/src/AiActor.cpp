@@ -12,38 +12,13 @@ AiActor::AiActor(int id) {
 	mScore = 0;
 }
 
-void AiActor::InitializeAreas() {
-	mAreas.clear();
-	Area* area;
-
-	int a = 2;
-	int b = FIELD_SIZE/BLOCKSIZE/2;
-	int c = FIELD_SIZE/BLOCKSIZE-3;
-
-	Point p(b,b);
-
-	if(mId == 0) { p.X = a; p.Y = a; }
-	if(mId == 1) { p.X = c; p.Y = c; }
-	if(mId == 2) { p.X = c; p.Y = a; }
-	if(mId == 3) { p.X = a; p.Y = c; }
-	if(mId == 4) { p.X = a; p.Y = b; }
-	if(mId == 5) { p.X = c; p.Y = b; }
-	if(mId == 6) { p.X = b; p.Y = a; }
-	if(mId == 7) { p.X = b; p.Y = c; }
-
-
-	area = new Area(p);
-	area->SetColor(mColor);
-	mAreas.push_back(area);
-}
-
 
 void AiActor::Update(float time_diff, sf::Vector2f offset) {
-	UpdateAllAreas(time_diff, offset);
+	mArea.Update(time_diff, offset);
 }
 
 bool AiActor::Evolve() {
-	std::cout<<std::endl;
+	std::cout << "/*";
 	Point click;
 	// Think about a task to do
 	// a) to the center (when there is someone or in offensive mode)
@@ -70,9 +45,7 @@ bool AiActor::Evolve() {
 
 	bool closer_to_center = false;
 	if(task_a > task_b && task_a > task_c) {
-		Area& rndarea = mAreas[rand()%mAreas.size()];
-		Point cl = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand()%rndarea.GetPoints().size());
-		std::cout << mName << " chooses to go to the center " << std::endl;
+		Point cl = mArea.GetPointAt(mArea.GetPoints().begin(), rand()%mArea.GetPoints().size());
 		// TO THE CENTER
 		// get some point close to center and area
 		// get area's closest point
@@ -83,8 +56,7 @@ bool AiActor::Evolve() {
 			if(r == 1) click = cl+Point( 1, 0);
 			if(r == 2) click = cl+Point( 0,-1);
 			if(r == 3) click = cl+Point( 0, 1);
-			rndarea = mAreas[rand()%mAreas.size()];
-			cl = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand()%rndarea.GetPoints().size());
+			cl = mArea.GetPointAt(mArea.GetPoints().begin(), rand()%mArea.GetPoints().size());
 		}
 		if (Clicked(click))
 			closer_to_center = true;
@@ -97,13 +69,10 @@ bool AiActor::Evolve() {
 		while(true) {
 			Point rndpoint;
 			if (task_b > task_c) {
-				std::cout << mName << " chooses to increase its area " << std::endl;
 				// INCREASE AREA
 				// choose random point and move out
-				Area& rndarea = mAreas[rand()%mAreas.size()];
-				rndpoint = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand()%rndarea.GetPoints().size());
+				rndpoint = mArea.GetPointAt(mArea.GetPoints().begin(), rand()%mArea.GetPoints().size());
 			} else {
-				std::cout << mName << " chooses to attack someone" << std::endl;
 				// DECREASE OTHER'S AREA
 				rndpoint = ContactWithActor();
 			}
@@ -115,21 +84,17 @@ bool AiActor::Evolve() {
 				if((r+i)%4 == 1) click = rndpoint+Point( 1, 0);
 				if((r+i)%4 == 2) click = rndpoint+Point( 0,-1);
 				if((r+i)%4 == 3) click = rndpoint+Point( 0, 1);
-				std::cout << "Click = " << click.X << " " << click.Y << std::endl;
 				++i;
 			}
 			if (Clicked(click))
 				break;
 		}
 	}
+
+	std::cout << "*/" << std::endl;
 	return true;
 }
 
 Point AiActor::ContactWithActor() {
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		Point p = mAreas[rand()%mAreas.size()].ContactWithActor(mId);
-		if(p.X != -1 && p.Y != -1)
-			return p;
-	}
-	return Point(-1,-1);
+	return mArea.ContactWithActor(mId);
 }

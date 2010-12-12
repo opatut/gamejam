@@ -7,7 +7,6 @@ class PlayerActor : public Actor {
 public:
 	PlayerActor(int id);
 	void Update(float time_diff, sf::Vector2f offset);
-	void InitializeAreas();
 };
 
 #endif // PLAYERACTOR_HPP

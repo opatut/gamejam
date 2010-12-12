@@ -1,4 +1,5 @@
 #include "Point.hpp"
+#include "Definitions.hpp"
 #include <cstdlib>
 #include <math.h>
 
@@ -29,4 +30,8 @@ float Point::RealDistanceTo(const Point &p) {
 
 bool Point::operator == (const Point &p2) {
 	return (p2.X == X && p2.Y == Y);
+}
+
+bool Point::IsInField() const {
+	return X >= 0 && Y >= 0 && X <= FIELD_SIZE/BLOCKSIZE && Y <= FIELD_SIZE/BLOCKSIZE;
 }

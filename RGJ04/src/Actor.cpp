@@ -1,4 +1,5 @@
 #include "Actor.hpp"
+#include "World.hpp"
 #include <iostream>
 
 Actor::Actor() {}
@@ -10,20 +11,28 @@ Actor::Actor(int id) {
 
 Actor::~Actor() {}
 
-void Actor::InitializeAreas() {
-	mAreas.clear();
-}
+void Actor::InitializeArea() {
+	int a = 2;
+	int b = FIELD_SIZE/BLOCKSIZE/2;
+	int c = FIELD_SIZE/BLOCKSIZE-3;
 
-void Actor::UpdateAllAreas(float time_diff, sf::Vector2f offset) {
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		mAreas[i].Update(time_diff, offset);
-	}
+	Point p(b,b);
+
+	if(mId == 0) { p.X = a; p.Y = a; }
+	if(mId == 1) { p.X = c; p.Y = c; }
+	if(mId == 2) { p.X = c; p.Y = a; }
+	if(mId == 3) { p.X = a; p.Y = c; }
+	if(mId == 4) { p.X = a; p.Y = b; }
+	if(mId == 5) { p.X = c; p.Y = b; }
+	if(mId == 6) { p.X = b; p.Y = a; }
+	if(mId == 7) { p.X = b; p.Y = c; }
+
+	mArea = Area(p);
+	mArea.SetColor(mColor);
 }
 
 void Actor::Draw(sf::RenderTarget& target) {
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		mAreas[i].Draw(target);
-	}
+	mArea.Draw(target);
 }
 
 bool Actor::Evolve() {
@@ -31,66 +40,45 @@ bool Actor::Evolve() {
 }
 
 bool Actor::IsValidAddPoint(const Point p, bool needs_outside) {
-	if(p.X < 0 || p.Y < 0 || p.X > FIELD_SIZE/BLOCKSIZE || p.Y > FIELD_SIZE/BLOCKSIZE)
+	if(!p.IsInField())
 		return false;
 
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
 
-		int first_pos, last_pos;
-		mAreas[i].GetFirstLastPos(p, first_pos, last_pos);
+	int first_pos, last_pos;
+	mArea.GetFirstLastPos(p, first_pos, last_pos);
 
 
-		if(mAreas[i].GetClosestPoint(p).DistanceTo(p) != 1 ||
-		   (needs_outside && mAreas[i].IsPointInside(p)) ||
-		   mAreas[i].PointOnPolygon(p) ||
-		   last_pos == -1) // did not find 2 points to connect to
-			return false;
-	}
-	return true;
+	return !(mArea.GetClosestPoint(p).DistanceTo(p) != 1 ||
+		   (needs_outside && mArea.IsPointInside(p)) ||
+		   mArea.PointOnPolygon(p) ||
+		   last_pos == -1); // did not find 2 points to connect to
 }
 
 Point Actor::GetClosestPoint(const Point p, int offset) {
-	Point closest;
-	int cl_area;
-	int last_distance = 1000000;
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		Point cp = mAreas[i].GetClosestPoint(p);
-		int d = cp.DistanceTo(p);
-		if(d < last_distance) {
-			closest = cp;
-			cl_area = i;
-			last_distance = d;
-		}
-	}
-	if(offset == 0) return closest;
-	else return mAreas[cl_area].GetPointAt(mAreas[cl_area].GetPoints().begin(),mAreas[cl_area].GetClosestPointNum(closest)+offset);
+	return mArea.GetClosestPoint(p, offset);;
 }
 
 bool Actor::PointOnPolygon(const Point p) {
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		if(mAreas[i].PointOnPolygon(p))
-			return true;
-	}
-	return false;
+	return mArea.PointOnPolygon(p);
 }
+
 bool Actor::IsPointInside(const Point p) {
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		if(mAreas[i].IsPointInside(p))
-			return true;
-	}
-	return false;
+	return mArea.IsPointInside(p);
+}
+
+void Actor::RemovePoint(const Point p) {
+	mArea.RemovePoint(p);
 }
 
 bool Actor::Clicked(const Point p) {
-	bool done = false;
-	for(unsigned int i = 0; i < mAreas.size(); ++i) {
-		if(mAreas[i].GetClosestPoint(p).DistanceTo(p) == 1) {
-			done = mAreas[i].AddPoint(p);
+	if(IsValidAddPoint(p)) {
+		if (mArea.AddPoint(p)) {
+			AddScore(5);
+			World::get_mutable_instance().PointAdded(p, mId);
+			return true;
 		}
 	}
-	if(done)
-		AddScore(5);
-	return done;
+	return false;
 }
 
 const int Actor::GetScore() const {

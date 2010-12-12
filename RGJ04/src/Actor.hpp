@@ -12,7 +12,7 @@ public:
 	Actor(int id);
 	virtual ~Actor() = 0;
 
-	virtual void InitializeAreas();
+	virtual void InitializeArea();
 
 	virtual void Update(float time_diff, sf::Vector2f offset) = 0;
 	virtual void Draw(sf::RenderTarget& target);
@@ -25,7 +25,10 @@ public:
 	bool PointOnPolygon(const Point p);
 	bool IsPointInside(const Point p);
 
+	void RemovePoint(const Point p);
 	bool Clicked(const Point p);
+
+
 	const int GetScore() const;
 	void AddScore(int score);
 
@@ -42,10 +45,8 @@ protected:
 	int mId;
 	std::string mName;
 	int mScore;
-	boost::ptr_vector<Area> mAreas;
+	Area mArea;
 	sf::Color mColor;
-
-	void UpdateAllAreas(float time_diff, sf::Vector2f offset);
 };
 
 #endif // ACTOR_HPP

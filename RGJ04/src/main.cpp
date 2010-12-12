@@ -9,8 +9,7 @@
 #include "AiActor.hpp"
 #include "Definitions.hpp"
 
-std::string names[] = { "You", "Amy Ameba", "Phagocyte", "Euglena",
-						"P-Dub", "Steve", "Amoebia Pond", "Your gf" };
+std::string names[] = { "You", "Amy", "Bill", "Charlie", "Detlef", "Emma", "Fred", "GladOS" };
 sf::Color colors[] = { sf::Color(0,255,0), sf::Color::Red, sf::Color::Blue, sf::Color::Yellow,
 					   sf::Color(0,100,0), sf::Color(255,0,255), sf::Color(0,255,255), sf::Color::White };
 std::string credits[] = {"Programmed by opatut", "Music: Where Am I? by hamsteralliance.com", "Font: TT-KP by Christophe Caignaert"};
@@ -49,14 +48,14 @@ bool game() {
 	PlayerActor* actor = new PlayerActor(0);
 	actor->SetName(names[0]);
 	actor->SetColor(colors[0]);
-	actor->InitializeAreas();
+	actor->InitializeArea();
 	world.AddActor(actor, true);
 
 	for(int i = 1; i < num_actors; ++i) {
 		AiActor* aiactor = new AiActor(i);
 		aiactor->SetName(names[i]);
 		aiactor->SetColor(colors[i]);
-		aiactor->InitializeAreas();
+		aiactor->InitializeArea();
 		world.AddActor(aiactor);
 	}
 

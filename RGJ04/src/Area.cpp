@@ -2,6 +2,8 @@
 #include "World.hpp"
 #include <iostream>
 
+Area::Area() {}
+
 Area::Area(Point starting_position) {
 	mPoints.push_back(starting_position);
 	mPoints.push_back(starting_position + Point(0,1));
@@ -45,14 +47,14 @@ void Area::Draw(sf::RenderTarget& target) {
 	}
 }
 
-Point Area::GetClosestPoint(const Point p) {
+Point Area::GetClosestPoint(const Point p, int offset) {
 	Point closest = p;
 	int last_distance = 1000000;
 
 	for(unsigned int i = 0; i < mPoints.size(); i++) {
 		int d = mPoints[i].DistanceTo(p);
 		if(d < last_distance) {
-			closest = mPoints[i];
+			closest = GetPointAt(mPoints.begin(),i+offset);
 			last_distance = d;
 		}
 	}
@@ -113,6 +115,43 @@ void Area::GetFirstLastPos(Point p, int& first_pos, int& last_pos) {
 			}
 		}
 	}
+
+}
+
+// returns wheter the point 0 has been deleted
+bool Area::EraseBetween(int first_pos, int last_pos) {
+	if(mPoints.size() < 3) {
+		std::cerr << "Not enough points to keep alive" << std::endl;
+		exit(1);
+	}
+
+	if(first_pos > last_pos)
+		std::swap(first_pos, last_pos);
+
+	if(last_pos - first_pos > mPoints.size()-last_pos+first_pos ) {
+		std::swap(last_pos, first_pos);
+		int i = first_pos + 1;
+		while(i < mPoints.size() && mPoints.size()>0) {
+			mPoints.erase(mPoints.begin()+i);
+			std::cout << "> a erase " << i << std::endl;
+			i++;
+		}
+
+		i = last_pos;
+		while(i > 0 && mPoints.size()>0) {
+			mPoints.erase(mPoints.begin());
+			std::cout << "> b erase " << 0 << std::endl;
+			i--;
+		}
+
+	} else {
+		int i = first_pos + 1;
+		while(i < last_pos && mPoints.size()>0) {
+			mPoints.erase(mPoints.begin()+i);
+			std::cout << "> c erase " << i << std::endl;
+			last_pos--;
+		}
+	}
 }
 
 bool Area::AddPoint(Point p) {
@@ -122,24 +161,45 @@ bool Area::AddPoint(Point p) {
 	if (last_pos == -1)
 		return false;
 
+	std::cout << first_pos << " / " << last_pos << std::endl;
+
 	// check if first and last are swapped (first_pos is always < last_pos)
-	if(last_pos - first_pos > mPoints.size()-last_pos+first_pos ) {
-		std::swap(last_pos, first_pos);
+
+	std::cout << "erasing between: " << first_pos << " and " << last_pos << std::endl;
+
+	bool overflow = EraseBetween(first_pos, last_pos);
+	if(overflow) {
+		// insert new point at end
+		mPoints.push_back(p);
+	} else {
+		// insert new point after first_pos
+		mPoints.insert(mPoints.begin()+first_pos+1, p);
 	}
 
-	//std::cout << "erasing between: " << first_pos << " and " << last_pos << std::endl;
 
-	// remove everything in between
-	int i = first_pos + 1;
-	while(i < last_pos) {
-		mPoints.erase(mPoints.begin()+i);
-		std::cout << "> erase " << i << std::endl;
-		last_pos--;
-	}
-
-	// insert new point after first_pos
-	mPoints.insert(mPoints.begin()+first_pos+1, p);
 	return true;
+}
+
+void Area::RemovePoint(const Point p) {
+	int index = GetPointIndex(p);
+
+	Point new_point;
+	for(int j = 0; j <= 3; ++j) {
+		if(j == 0) new_point = Point(-1, 0) + p;
+		if(j == 1) new_point = Point( 1, 0) + p;
+		if(j == 2) new_point = Point( 0,-1) + p;
+		if(j == 3) new_point = Point( 0, 1) + p;
+
+		if(IsPointInside(new_point)) {
+			// add new point after p
+			mPoints.insert(mPoints.begin()+index+1, new_point);
+		} else if(PointOnPolygon(new_point)) {
+			// remove everything between new_point and p, but leave them
+			EraseBetween(GetPointIndex(new_point), index);
+		}
+	}
+	// remove point on polygon
+	mPoints.erase(mPoints.begin()+index);
 }
 
 std::vector<Point> Area::GetPoints() {
@@ -160,6 +220,14 @@ Point Area::GetPointAt(std::vector<Point>::iterator i, int offset) {
 	}
 
 	return *i;
+}
+
+int Area::GetPointIndex(const Point p) {
+	for(unsigned int i = 0; i < mPoints.size(); ++i) {
+		if(p.X == mPoints[i].X && p.Y == mPoints[i].Y)
+			return i;
+	}
+	return -1;
 }
 
 bool Area::IsPointInside(const Point p) {
