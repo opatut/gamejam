@@ -73,8 +73,7 @@ bool game() {
 	sf::Text debug("Debug label", monofont, 14);
 	debug.SetPosition(10, WINDOW_HEIGHT-24);
 
-	sf::Text myscore("0", monofont, 100);
-	myscore.SetPosition(WINDOW_WIDTH - (WINDOW_WIDTH/2-FIELD_SIZE/2) + 40, WINDOW_HEIGHT/2-FIELD_SIZE/2 - 30);
+	sf::Text myscore("0", monofont, 50);
 	myscore.SetColor(sf::Color::White);
 
 
@@ -90,6 +89,15 @@ bool game() {
 	float rect_alpha = 1;
 	bool leaving = false;
 	bool leaving_value = false;
+
+	sf::Shape game_over_rect = sf::Shape::Rectangle(0,0,WINDOW_WIDTH, WINDOW_HEIGHT, sf::Color::Black);
+	sf::Text game_over_text_1("YOU ???", monofont, 60);
+	sf::Text game_over_text_2("You ate all your enemies and got a score of !?.", monofont, 16);
+	float game_over_alpha = 0;
+	bool game_over = false;
+	bool game_over_won = true;
+	int final_score = 0;
+
 
 	while(true) { // will be exited by <return>
 		float time_diff = clock.GetElapsedTime();
@@ -118,8 +126,13 @@ bool game() {
 				leaving_value = false;
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
-					leaving = true;
-					leaving_value = true;
+					if(game_over) {
+						leaving = true;
+						leaving_value = true;
+					} else {
+						game_over = true;
+						game_over_won = false;
+					}
 				} else if(event.Key.Code == sf::Key::M) {
 					ToggleMusic();
 				} else if(event.Key.Code == sf::Key::S) {
@@ -137,10 +150,11 @@ bool game() {
 		}
 
 		// UPDATE
-		world.Update(0);
+		world.Update(time_diff);
 
 		debug.SetString("FPS: " + boost::lexical_cast<std::string>(round(1.f/time_diff)));
 		myscore.SetString(boost::lexical_cast<std::string>(world.GetActorById(0).GetScore()));
+		myscore.SetPosition(WINDOW_WIDTH/2 - FIELD_SIZE/2 - myscore.GetRect().Width - 20, WINDOW_HEIGHT/2+FIELD_SIZE/2 - myscore.GetRect().Height);
 
 		thisisyou_alpha -= time_diff * 0.1;
 		if(thisisyou_alpha < 0) thisisyou_alpha = 0;
@@ -154,6 +168,28 @@ bool game() {
 			rect_alpha = 1;
 		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
 
+
+		// game over screen
+		if(game_over && game_over_alpha < 1)
+			game_over_alpha+= time_diff*2;
+		if(game_over_alpha > 1)
+			game_over_alpha = 1;
+		if(game_over) {
+			final_score = world.GetPlayerActor()->GetScore();
+			game_over_rect.SetColor(sf::Color(0,0,0,255*game_over_alpha));
+			game_over_text_1.SetColor(sf::Color(255,255,255,255*game_over_alpha));
+			game_over_text_2.SetColor(sf::Color(255,255,255,255*game_over_alpha));
+			if(game_over_won) {
+				game_over_text_1.SetString("You won.");
+				game_over_text_2.SetString("You ate all your enemies and got a score of "+boost::lexical_cast<std::string>(final_score)+".");
+			} else {
+				game_over_text_1.SetString("You lost.");
+				game_over_text_2.SetString("You have been eaten with a score of "+boost::lexical_cast<std::string>(final_score)+". Y U NO EAT THE OTHERS?");
+			}
+			game_over_text_1.SetPosition(WINDOW_WIDTH/2-game_over_text_1.GetRect().Width/2, WINDOW_HEIGHT/2-game_over_text_1.GetRect().Height/2);
+			game_over_text_2.SetPosition(WINDOW_WIDTH/2-game_over_text_2.GetRect().Width/2, WINDOW_HEIGHT/2-game_over_text_2.GetRect().Height/2+50);
+		}
+
 		// MUSIC FADING
 		if(leaving && !leaving_value && music_volume > 0) {
 			music_volume -= 2*time_diff;
@@ -166,6 +202,18 @@ bool game() {
 			return leaving_value;
 		}
 
+		// check for winning / losing situation
+		if(world.GetPlayerActor()->IsDisabled()) {
+			// you lose!
+			game_over = true;
+			game_over_won = false;
+		} else if(world.GetNumActorsLiving() == 1) {
+			// you win!
+			game_over = true;
+			game_over_won = true;
+		}
+
+
 		// DRAW
 		app.Clear(sf::Color(0,0,0));
 		world.Draw(app);
@@ -176,6 +224,11 @@ bool game() {
 			app.Draw(thisisyou);
 		app.Draw(debug);
 		app.Draw(myscore);
+		if(game_over) {
+			app.Draw(game_over_rect);
+			app.Draw(game_over_text_1);
+			app.Draw(game_over_text_2);
+		}
 		app.Draw(black_rect);
 		app.Display();
 	}

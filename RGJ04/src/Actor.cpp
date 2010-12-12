@@ -7,14 +7,15 @@ Actor::Actor() {}
 Actor::Actor(int id) {
 	mId = id;
 	mScore = 0;
+	mDisabled = false;
 }
 
 Actor::~Actor() {}
 
 void Actor::InitializeArea() {
-	int a = 2;
+	int a = 4;
 	int b = FIELD_SIZE/BLOCKSIZE/2;
-	int c = FIELD_SIZE/BLOCKSIZE-3;
+	int c = FIELD_SIZE/BLOCKSIZE-a;
 
 	Point p(b,b);
 
@@ -32,6 +33,8 @@ void Actor::InitializeArea() {
 }
 
 void Actor::Draw(sf::RenderTarget& target) {
+	if(mDisabled)
+		return;
 	mArea.Draw(target);
 }
 
@@ -71,18 +74,30 @@ void Actor::RemovePoint(const Point p) {
 	mArea.RemovePoint(p);
 }
 
+int Actor::RemovePointsInsideArea(Area& area) {
+	int n = 0;
+	for(unsigned int i = 0; i < mArea.GetPoints().size(); ++i) {
+		Point p = mArea.GetPointAt(mArea.GetPoints().begin(), i);
+		if(area.IsPointInside(p)) {
+			RemovePoint(p);
+			n++;
+		}
+	}
+	return n;
+}
+
 bool Actor::Clicked(const Point p) {
 	if(IsValidAddPoint(p)) {
 		if (mArea.AddPoint(p)) {
-			AddScore(5);
-			World::get_mutable_instance().PointAdded(p, mId);
+			AddScore(1);
+			AddScore(10*World::get_mutable_instance().PointAdded(p, mId));
 			return true;
 		}
 	}
 	return false;
 }
 
-const int Actor::GetScore() const {
+int Actor::GetScore() {
 	return mScore;
 }
 
@@ -95,8 +110,9 @@ std::string Actor::ToString(bool current) {
 	for(int i = score.length(); i <= 6; ++i) {
 		score = " " + score;
 	}
+	if(mDisabled) return score + " X " + mName;
 	if(current) return score + " * " + mName;
-	else return score + "   " + mName;
+	return score + "   " + mName;
 
 }
 
@@ -119,4 +135,12 @@ void Actor::SetName(const std::string& name) {
 
 const std::string& Actor::GetName() const {
 	return mName;
+}
+
+Area& Actor::GetArea(){
+	return mArea;
+}
+
+bool Actor::IsDisabled() {
+	return mDisabled;
 }

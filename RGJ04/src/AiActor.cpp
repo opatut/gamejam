@@ -10,6 +10,7 @@ AiActor::AiActor(int id) {
 	mId = id;
 	mMode = (rand()%2000 - 1000)/1000.f;
 	mScore = 0;
+	mDisabled = false;
 }
 
 
@@ -18,6 +19,11 @@ void AiActor::Update(float time_diff, sf::Vector2f offset) {
 }
 
 bool AiActor::Evolve() {
+	if(mArea.GetPoints().size() < 3)
+		mDisabled = true;
+	if(mDisabled)
+		return true;
+
 	std::cout <<  "-----------> " << mName << " evolves <----------" << std::endl;
 	Point click;
 	// Think about a task to do

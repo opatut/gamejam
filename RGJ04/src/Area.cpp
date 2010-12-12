@@ -61,23 +61,6 @@ Point Area::GetClosestPoint(const Point p, int offset) {
 	return closest;
 }
 
-int Area::GetClosestPointNum(const Point p) {
-	Point closest = p;
-	int cl_id = 0;
-	int last_distance = 1000000;
-
-	unsigned int i = 0;
-	for(; i < mPoints.size(); i++) {
-		int d = mPoints[i].DistanceTo(p);
-		if(d < last_distance) {
-			closest = mPoints[i];
-			cl_id = i;
-			last_distance = d;
-		}
-	}
-	return i;
-}
-
 bool Area::PointOnPolygon(const Point p) {
 	return GetClosestPoint(p).DistanceTo(p) == 0;
 }
@@ -122,7 +105,7 @@ void Area::GetFirstLastPos(Point p, int& first_pos, int& last_pos) {
 bool Area::EraseBetween(int first_pos, int last_pos) {
 	if(mPoints.size() < 3) {
 		std::cerr << "Not enough points to keep alive" << std::endl;
-		exit(1);
+		return true;
 	}
 
 	if(first_pos > last_pos)
@@ -192,15 +175,22 @@ void Area::RemovePoint(const Point p) {
 
 		if(IsPointInside(new_point)) {
 			// add new point after p
-			mPoints.insert(mPoints.begin()+index+1, new_point);
-		} /*else if(PointOnPolygon(new_point)) {
+			//mPoints.insert(mPoints.begin()+index+1, new_point);
+			//added = true;
+			AddPoint(new_point);
+		} else if(PointOnPolygon(new_point)) {
 			// remove everything between new_point and p, but leave new_point
-			mPoints.erase(mPoints.begin()+index);
-			EraseBetween(GetPointIndex(new_point), index-1);
-		}*/
+			// mPoints.erase(mPoints.begin()+index);
+			if(abs(GetPointIndex(new_point)-index) > 1)
+				EraseBetween(GetPointIndex(new_point), index);
+		}
 	}
-	// remove point on polygon
-	mPoints.erase(mPoints.begin()+index);
+	for(auto iter = mPoints.begin(); iter != mPoints.end(); iter++) {
+		if(iter->X == p.X && iter->Y == p.Y) {
+			mPoints.erase(iter);
+			iter--;
+		}
+	}
 
 }
 
@@ -222,7 +212,7 @@ int Area::GetPointIndex(const Point p) {
 	return -1;
 }
 
-bool Area::IsPointInside(const Point p) {
+bool Area::IsPointInside(const Point p){
 	// if point is part of polygon, return false
 	if(PointOnPolygon(p))
 		return false;

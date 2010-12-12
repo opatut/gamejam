@@ -22,8 +22,9 @@ public:
 	void Update(float time_diff);
 	void Draw(sf::RenderTarget& target);
 	bool Clicked(sf::Vector2i mouse_pos);
-	bool PointAdded(const Point p, int actor_id);
+	int PointAdded(const Point p, int actor_id);
 	bool InsideOtherArea(const Point p, int own_id);
+	void RemovePointsInsideActor(int actor);
 	sf::Vector2f GetOffset();
 
 	PlayerActor* GetPlayerActor();
@@ -33,6 +34,8 @@ public:
 
 	Actor& GetActorById(int id);
 	int GetActorAtPoint(const Point p);
+
+	int GetNumActorsLiving();
 private:
 	boost::ptr_vector<Actor> mActors;
 	sf::RenderWindow* mApp;

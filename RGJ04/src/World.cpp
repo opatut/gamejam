@@ -21,6 +21,10 @@ void World::AddActor(Actor* actor, bool is_player) {
 void World::Update(float time_diff) {
 	for(unsigned int i = 0; i < mActors.size(); ++i) {
 		mActors[i].Update(time_diff, GetOffset());
+
+		// remove all other points inside of mActors[i]
+		RemovePointsInsideActor(i);
+
 	}
 
 	sf::Vector2f mouse_position(mApp->GetInput().GetMouseX(), mApp->GetInput().GetMouseY());
@@ -77,23 +81,30 @@ bool World::InsideOtherArea(const Point p, int own_id) {
 		if(mActors[i].GetId() == own_id)
 			break;
 		if(mActors[i].IsPointInside(p)) {
-			std::cout << "Its inside of " << i << std::endl;
 			return true;
 		}
 	}
-	std::cout << "Not inside anything." << std::endl;
 	return false;
 }
 
-bool World::PointAdded(const Point p, int actor_id) {
+void World::RemovePointsInsideActor(int actor) {
+	for(unsigned int i = 0; i < mActors.size(); ++i) {
+		mActors[actor].AddScore(25* mActors[i].RemovePointsInsideArea(mActors[actor].GetArea()));
+	}
+}
+
+int World::PointAdded(const Point p, int actor_id) {
 	Point po = p;
+	int n = 0;
 	for(unsigned int i = 0; i < mActors.size(); ++i) {
 		if(mActors[i].GetId() != actor_id) {
 			if(mActors[i].PointOnPolygon(po)) {
 				mActors[i].RemovePoint(po);
+				n++;
 			}
 		}
 	}
+	return n;
 }
 
 sf::Vector2f World::GetOffset() {
@@ -126,4 +137,14 @@ int World::GetActorAtPoint(const Point p) {
 			return mActors[i].GetId();
 	}
 	return -1;
+}
+
+int World::GetNumActorsLiving() {
+	int n = 0;
+	for(unsigned int i = 0; i<mActors.size(); ++i) {
+		if(!mActors[i].IsDisabled())
+			n++;
+
+	}
+	return n;
 }

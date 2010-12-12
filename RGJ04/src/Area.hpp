@@ -15,7 +15,6 @@ public:
 
 	void GetFirstLastPos(Point p, int& first_pos, int& last_pos);
 	Point GetClosestPoint(const Point p, int offset = 0);
-	int GetClosestPointNum(const Point p);
 	bool PointOnPolygon(const Point p);
 
 	void SetColor(const sf::Color color);

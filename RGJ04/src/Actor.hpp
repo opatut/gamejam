@@ -26,10 +26,11 @@ public:
 	bool IsPointInside(const Point p);
 
 	void RemovePoint(const Point p);
+	int RemovePointsInsideArea(Area& area);
 	bool Clicked(const Point p);
 
 
-	const int GetScore() const;
+	int GetScore();
 	void AddScore(int score);
 
 	std::string ToString(bool current);
@@ -41,12 +42,17 @@ public:
 
 	void SetName(const std::string& name);
 	const std::string& GetName() const;
+
+	Area& GetArea();
+
+	bool IsDisabled();
 protected:
 	int mId;
 	std::string mName;
 	int mScore;
 	Area mArea;
 	sf::Color mColor;
+	bool mDisabled;
 };
 
 #endif // ACTOR_HPP
