@@ -302,7 +302,7 @@ bool menu() {
 					ToggleMusic();
 				} else if(event.Key.Code == sf::Key::Down) {
 					active_entry++;
-					if(active_entry >= menu.size())
+					if(active_entry >= int(menu.size()))
 						active_entry = 0;
 				} else if(event.Key.Code == sf::Key::Up) {
 					active_entry--;
@@ -343,7 +343,7 @@ bool menu() {
 		else menu[3].SetString("Music off");
 
 
-		for(int i = 0; i < menu.size(); ++i) {
+		for(int i = 0; i < int(menu.size()); ++i) {
 			if(i==active_entry) {
 				menu[i].SetStyle(sf::Text::Bold);
 				menu[i].SetColor(sf::Color::White);
@@ -393,7 +393,7 @@ bool menu() {
 
 		// DRAW
 		app.Clear();
-		for(int i = 0; i < menu.size(); ++i) {
+		for(unsigned int i = 0; i < menu.size(); ++i) {
 			app.Draw(menu[i]);
 		}
 		app.Draw(title);

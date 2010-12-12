@@ -129,6 +129,7 @@ Actor& World::GetActorById(int id) {
 		if(mActors[i].GetId() == id)
 			return mActors[i];
 	}
+	return mActors[0];
 }
 
 int World::GetActorAtPoint(const Point p) {

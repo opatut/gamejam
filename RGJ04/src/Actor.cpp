@@ -15,7 +15,7 @@ Actor::~Actor() {}
 void Actor::InitializeArea() {
 	int a = 4;
 	int b = FIELD_SIZE/BLOCKSIZE/2;
-	int c = FIELD_SIZE/BLOCKSIZE-a;
+	int c = FIELD_SIZE/BLOCKSIZE-a-1;
 
 	Point p(b,b);
 
@@ -124,7 +124,7 @@ const sf::Color Actor::GetColor() const {
 	return mColor;
 }
 
-const int Actor::GetId() {
+int Actor::GetId() {
 	return mId;
 }
 

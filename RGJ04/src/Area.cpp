@@ -12,17 +12,8 @@ Area::Area(Point starting_position) {
 }
 
 void Area::Update(float time_diff, sf::Vector2f offset) {
-	/*sf::Color inner_color(mColor.r, mColor.g, mColor.b, 200);
-
-	mShape = sf::Shape();
-	for(unsigned int i = 0; i < mPoints.size(); i++) {
-		mShape.AddPoint(mPoints[i].X * BLOCKSIZE, mPoints[i].Y * BLOCKSIZE, inner_color, mColor);
-	}
-	mShape.SetOutlineWidth(1);
-	mShape.EnableOutline(true);
-	mShape.EnableFill(true);
-	mShape.SetPosition(offset);*/
 	mOffset = offset;
+	time_diff*=1; // to avoid warning
 }
 
 void Area::Draw(sf::RenderTarget& target) {
@@ -76,7 +67,7 @@ const sf::Color Area::GetColor() const {
 void Area::GetFirstLastPos(Point p, int& first_pos, int& last_pos) {
 	first_pos = -1;
 	last_pos = -1;
-	for(int i = 0; i < mPoints.size(); ++i) {
+	for(unsigned int i = 0; i < mPoints.size(); ++i) {
 		if(mPoints[i].DistanceTo(p) == 1) {
 			if(first_pos == -1) {
 				first_pos = i;
@@ -88,7 +79,7 @@ void Area::GetFirstLastPos(Point p, int& first_pos, int& last_pos) {
 
 	if (last_pos == -1) {
 		first_pos = -1;
-		for(int i = 0; i < mPoints.size(); ++i) {
+		for(unsigned int i = 0; i < mPoints.size(); ++i) {
 			if(mPoints[i].RealDistanceTo(p) < 2) {
 				if(first_pos == -1) {
 					first_pos = i;
@@ -111,10 +102,10 @@ bool Area::EraseBetween(int first_pos, int last_pos) {
 	if(first_pos > last_pos)
 		std::swap(first_pos, last_pos);
 
-	if(last_pos - first_pos > mPoints.size()-last_pos+first_pos ) {
+	if(last_pos - first_pos > int(mPoints.size())-last_pos+first_pos ) {
 		std::swap(last_pos, first_pos);
 		int i = first_pos + 1;
-		while(i < mPoints.size() && mPoints.size()>0) {
+		while(i < int(mPoints.size()) && mPoints.size()>0) {
 			mPoints.erase(mPoints.begin()+i);
 			//std::cout << "> a erase " << i << std::endl;
 			i++;
@@ -262,7 +253,7 @@ bool Area::IsPointInside(const Point p){
 Point Area::ContactWithActor(int own_id) {
 	int rnd = rand()%mPoints.size();
 	for(unsigned int j = 0; j < mPoints.size(); ++j) {
-		int i = j + rnd;
+		unsigned int i = j + rnd;
 		while(i >= mPoints.size())
 			i -= mPoints.size();
 		for(int x = -1; x <= 1; ++x) {

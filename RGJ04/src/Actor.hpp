@@ -38,7 +38,7 @@ public:
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;
 
-	const int GetId();
+	int GetId();
 
 	void SetName(const std::string& name);
 	const std::string& GetName() const;

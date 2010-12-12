@@ -24,7 +24,7 @@ bool AiActor::Evolve() {
 	if(mDisabled)
 		return true;
 
-	std::cout <<  "-----------> " << mName << " evolves <----------" << std::endl;
+	//std::cout <<  "-----------> " << mName << " evolves <----------" << std::endl;
 	Point click;
 	// Think about a task to do
 	// a) to the center (when there is someone or in offensive mode)
