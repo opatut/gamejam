@@ -121,6 +121,9 @@ bool Area::AddPoint(Point p) {
 	return true;
 }
 
+std::vector<Point> Area::GetPoints() {
+	return mPoints;
+}
 
 Point Area::GetPointAt(std::vector<Point>::iterator i, int offset) {
 	while(offset > 0) {

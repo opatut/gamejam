@@ -19,6 +19,7 @@ public:
 	const sf::Color GetColor() const;
 
 	bool AddPoint(Point p);
+	std::vector<Point> GetPoints();
 	Point GetPointAt(std::vector<Point>::iterator i, int offset = 0);
 	bool IsPointInside(const Point p);
 	Point ContactWithActor(int own_id);

@@ -86,6 +86,20 @@ bool AiActor::Evolve() {
 	} else if (task_b > task_c) {
 		std::cout << mName << " chooses to increase its area " << std::endl;
 		// INCREASE AREA
+		// choose random point and move out
+		Area& rndarea = mAreas[rand()%mAreas.size()];
+		Point rndpoint = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand());
+		click = rndpoint;
+		int r = rand();
+		int i = 0;
+		while(i < 3 && (click == rndpoint || rndarea.IsPointInside(click)) ) {
+			if(r%4 == 0) click = rndpoint+Point(-1, 0);
+			if(r%4 == 1) click = rndpoint+Point( 1, 0);
+			if(r%4 == 2) click = rndpoint+Point( 0,-1);
+			if(r%4 == 3) click = rndpoint+Point( 0, 1);
+			++i;
+			++r;
+		}
 	} else {
 		std::cout << mName << " chooses to attack someone" << std::endl;
 		// DECREASE OTHER'S AREA

@@ -79,6 +79,11 @@ bool game() {
 	sf::Clock clock;
 	clock.Reset();
 
+	sf::Shape black_rect = sf::Shape::Rectangle(0,0,WINDOW_WIDTH, WINDOW_HEIGHT, sf::Color::Black);
+	float rect_alpha = 1;
+	bool leaving = false;
+	bool leaving_value = false;
+
 	while(true) { // will be exited by <return>
 		float time_diff = clock.GetElapsedTime();
 		clock.Reset();
@@ -102,10 +107,12 @@ bool game() {
 		sf::Event event;
 		while(app.GetEvent(event)) {
 			if(event.Type == sf::Event::Closed) {
-				return false;
+				leaving = true;
+				leaving_value = false;
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
-					return true;
+					leaving = true;
+					leaving_value = true;
 				}
 			} else if(event.Type == sf::Event::MouseButtonPressed) {
 				sf::Vector2i m(event.MouseButton.X, event.MouseButton.Y);
@@ -129,6 +136,15 @@ bool game() {
 		if(thisisyou_alpha < 0) thisisyou_alpha = 0;
 		thisisyou.SetColor(sf::Color(255,255,255,255*thisisyou_alpha));
 
+		if(!leaving) rect_alpha -= time_diff*0.5;
+		else rect_alpha += time_diff*1.5;
+		if(rect_alpha < 0)
+			rect_alpha = 0;
+		if(rect_alpha > 1 && leaving) {
+			return leaving_value;
+		}
+		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
+
 		// DRAW
 		app.Clear(sf::Color(0,0,0));
 		world.Draw(app);
@@ -138,6 +154,7 @@ bool game() {
 		if(thisisyou_alpha > 0)
 			app.Draw(thisisyou);
 		app.Draw(debug);
+		app.Draw(black_rect);
 		app.Display();
 	}
 }
@@ -166,12 +183,13 @@ bool menu() {
 	float credits_time = 0.f; // 3 .. 2,5 fade in / 2,5 .. 0,5 show / 0,5 .. 0 fade out
 	bool show_credits = false;
 
-	sf::Shape black_rect = sf::Shape::Rectangle(0,0,WINDOW_WIDTH, WINDOW_HEIGHT, sf::Color::Black);
-
 	sf::Clock clock;
 	clock.Reset();
 
+	sf::Shape black_rect = sf::Shape::Rectangle(0,0,WINDOW_WIDTH, WINDOW_HEIGHT, sf::Color::Black);
 	float rect_alpha = 1;
+	bool leaving = false;
+	bool leaving_value = false;
 
 	while(true) { // will be exited by <return>
 		float time_diff = clock.GetElapsedTime();
@@ -180,7 +198,8 @@ bool menu() {
 		sf::Event event;
 		while(app.GetEvent(event)) {
 			if(event.Type == sf::Event::Closed) {
-				return false; // stop program
+				leaving = true;
+				leaving_value = false; // stop program
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
 					return false;
@@ -193,9 +212,11 @@ bool menu() {
 					} else if(active_entry == 4) {
 						show_credits = true;
 					} else if(active_entry == 5) {
-						return false;
+						leaving = true;
+						leaving_value = false;
 					} else {
-						return true;
+						leaving = true;
+						leaving_value = true;
 					}
 				} else if(event.Key.Code == sf::Key::Down) {
 					active_entry++;
@@ -223,9 +244,13 @@ bool menu() {
 			menu[i].SetPosition(WINDOW_WIDTH / 2 - menu[i].GetRect().Width / 2, WINDOW_HEIGHT - menu.size()*40 - 40 + i*40);
 		}
 
-		rect_alpha -= time_diff*0.5;
+		if(!leaving) rect_alpha -= time_diff*0.5;
+		else rect_alpha += time_diff;
 		if(rect_alpha < 0)
 			rect_alpha = 0;
+		if(rect_alpha > 1 && leaving) {
+			return leaving_value;
+		}
 		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
 
 		if(show_credits) {
