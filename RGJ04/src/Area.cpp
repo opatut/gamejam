@@ -99,7 +99,7 @@ bool Area::AddPoint(Point p) {
 	}
 
 	if (last_pos == -1)
-		false;
+		return false;
 
 	// check if first and last are swapped (first_pos is always < last_pos)
 	if(last_pos - first_pos > mPoints.size()-last_pos+first_pos ) {
