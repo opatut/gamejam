@@ -4,7 +4,11 @@ by Paul <opatut> Bienkowski
 
 This is my project for the 4th Reddit game jam. Developed within 48 hours.
 
-Dependencies:
+Compile dependencies:
+    Boost
+    SFML 2
+
+Run dependencies:
     SFML 2
 
 Control Hints:
