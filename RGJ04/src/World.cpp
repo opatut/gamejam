@@ -71,6 +71,14 @@ bool World::Clicked(sf::Vector2i mouse_pos) {
 		return false;
 }
 
+bool World::InsideOtherArea(const Point p, int own_id) {
+	/*for(unsigned int i = 0; i < mActors.size(); ++i) {
+		if(mActors[i].GetId() != own_id && mActors[i].IsPointInside(p))
+			return true;
+	}*/
+	return false;
+}
+
 bool World::PointAdded(const Point p, int actor_id) {
 	Point po = p;
 	for(unsigned int i = 0; i < mActors.size(); ++i) {

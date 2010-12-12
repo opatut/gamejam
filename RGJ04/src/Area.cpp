@@ -143,7 +143,7 @@ bool Area::EraseBetween(int first_pos, int last_pos) {
 			std::cout << "> b erase " << 0 << std::endl;
 			i--;
 		}
-
+		return true;
 	} else {
 		int i = first_pos + 1;
 		while(i < last_pos && mPoints.size()>0) {
@@ -151,6 +151,7 @@ bool Area::EraseBetween(int first_pos, int last_pos) {
 			std::cout << "> c erase " << i << std::endl;
 			last_pos--;
 		}
+		return false;
 	}
 }
 
@@ -176,7 +177,6 @@ bool Area::AddPoint(Point p) {
 		mPoints.insert(mPoints.begin()+first_pos+1, p);
 	}
 
-
 	return true;
 }
 
@@ -193,13 +193,15 @@ void Area::RemovePoint(const Point p) {
 		if(IsPointInside(new_point)) {
 			// add new point after p
 			mPoints.insert(mPoints.begin()+index+1, new_point);
-		} else if(PointOnPolygon(new_point)) {
-			// remove everything between new_point and p, but leave them
-			EraseBetween(GetPointIndex(new_point), index);
-		}
+		} /*else if(PointOnPolygon(new_point)) {
+			// remove everything between new_point and p, but leave new_point
+			mPoints.erase(mPoints.begin()+index);
+			EraseBetween(GetPointIndex(new_point), index-1);
+		}*/
 	}
 	// remove point on polygon
 	mPoints.erase(mPoints.begin()+index);
+
 }
 
 std::vector<Point> Area::GetPoints() {
@@ -207,19 +209,7 @@ std::vector<Point> Area::GetPoints() {
 }
 
 Point Area::GetPointAt(std::vector<Point>::iterator i, int offset) {
-	while(offset > 0) {
-		i++;
-		if(i == mPoints.end()) i = mPoints.begin();
-		--offset;
-	}
-
-	while(offset < 0) {
-		if(i == mPoints.begin()) i = mPoints.end();
-		i--;
-		++offset;
-	}
-
-	return *i;
+	return *(i+offset%mPoints.size());
 }
 
 int Area::GetPointIndex(const Point p) {

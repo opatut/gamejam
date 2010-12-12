@@ -51,7 +51,8 @@ bool Actor::IsValidAddPoint(const Point p, bool needs_outside) {
 	return !(mArea.GetClosestPoint(p).DistanceTo(p) != 1 ||
 		   (needs_outside && mArea.IsPointInside(p)) ||
 		   mArea.PointOnPolygon(p) ||
-		   last_pos == -1); // did not find 2 points to connect to
+		   last_pos == -1 || // did not find 2 points to connect to
+		   World::get_mutable_instance().InsideOtherArea(p, mId) );
 }
 
 Point Actor::GetClosestPoint(const Point p, int offset) {

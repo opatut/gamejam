@@ -380,6 +380,5 @@ int main() {
 		if(!menu()) running = false;
 		else if(!game()) running = false;
 	}
-
-
+	return 0;
 }

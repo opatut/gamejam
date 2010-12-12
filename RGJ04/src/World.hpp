@@ -23,6 +23,7 @@ public:
 	void Draw(sf::RenderTarget& target);
 	bool Clicked(sf::Vector2i mouse_pos);
 	bool PointAdded(const Point p, int actor_id);
+	bool InsideOtherArea(const Point p, int own_id);
 	sf::Vector2f GetOffset();
 
 	PlayerActor* GetPlayerActor();
