@@ -30,7 +30,7 @@ void World::Update(float time_diff) {
 		Point closest = mPlayerActor->GetClosestPoint(mouse_point);
 		int d = closest.DistanceTo(mouse_point);
 		if(d == 1) {
-			mMouseHighlight = sf::Shape::Circle( mouse_point.X*BLOCKSIZE, mouse_point.Y*BLOCKSIZE, 3, sf::Color(255,255,255,100));
+			mMouseHighlight = sf::Shape::Rectangle( mouse_point.X*BLOCKSIZE-4, mouse_point.Y*BLOCKSIZE-3, 7, 7, sf::Color(255,255,255));
 			mMouseHighlight.SetPosition(GetOffset());
 		} else {
 			mMouseHighlight = sf::Shape();
