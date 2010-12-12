@@ -18,7 +18,7 @@ void AiActor::Update(float time_diff, sf::Vector2f offset) {
 }
 
 bool AiActor::Evolve() {
-	std::cout << "/*";
+	std::cout <<  "-----------> " << mName << " evolves <----------" << std::endl;
 	Point click;
 	// Think about a task to do
 	// a) to the center (when there is someone or in offensive mode)
@@ -88,10 +88,10 @@ bool AiActor::Evolve() {
 			}
 			if (Clicked(click))
 				break;
+			else
+				task_c = -1;
 		}
 	}
-
-	std::cout << "*/" << std::endl;
 	return true;
 }
 

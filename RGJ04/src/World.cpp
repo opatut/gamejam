@@ -28,6 +28,7 @@ void World::Update(float time_diff) {
 
 	if (mPlayerActor) {
 		if(mPlayerActor->IsValidAddPoint(mouse_point, false)) {
+		//if(!InsideOtherArea(mouse_point, -1)) {
 			mMouseHighlight = sf::Shape::Rectangle( mouse_point.X*BLOCKSIZE-4, mouse_point.Y*BLOCKSIZE-3, 7, 7, sf::Color(255,255,255));
 			mMouseHighlight.SetPosition(GetOffset());
 		} else {
@@ -72,10 +73,15 @@ bool World::Clicked(sf::Vector2i mouse_pos) {
 }
 
 bool World::InsideOtherArea(const Point p, int own_id) {
-	/*for(unsigned int i = 0; i < mActors.size(); ++i) {
-		if(mActors[i].GetId() != own_id && mActors[i].IsPointInside(p))
+	for(unsigned int i = 0; i < mActors.size(); ++i) {
+		if(mActors[i].GetId() == own_id)
+			break;
+		if(mActors[i].IsPointInside(p)) {
+			std::cout << "Its inside of " << i << std::endl;
 			return true;
-	}*/
+		}
+	}
+	std::cout << "Not inside anything." << std::endl;
 	return false;
 }
 

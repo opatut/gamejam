@@ -133,14 +133,14 @@ bool Area::EraseBetween(int first_pos, int last_pos) {
 		int i = first_pos + 1;
 		while(i < mPoints.size() && mPoints.size()>0) {
 			mPoints.erase(mPoints.begin()+i);
-			std::cout << "> a erase " << i << std::endl;
+			//std::cout << "> a erase " << i << std::endl;
 			i++;
 		}
 
 		i = last_pos;
 		while(i > 0 && mPoints.size()>0) {
 			mPoints.erase(mPoints.begin());
-			std::cout << "> b erase " << 0 << std::endl;
+			//std::cout << "> b erase " << 0 << std::endl;
 			i--;
 		}
 		return true;
@@ -148,7 +148,7 @@ bool Area::EraseBetween(int first_pos, int last_pos) {
 		int i = first_pos + 1;
 		while(i < last_pos && mPoints.size()>0) {
 			mPoints.erase(mPoints.begin()+i);
-			std::cout << "> c erase " << i << std::endl;
+			//std::cout << "> c erase " << i << std::endl;
 			last_pos--;
 		}
 		return false;
@@ -162,11 +162,11 @@ bool Area::AddPoint(Point p) {
 	if (last_pos == -1)
 		return false;
 
-	std::cout << first_pos << " / " << last_pos << std::endl;
+	//std::cout << first_pos << " / " << last_pos << std::endl;
 
 	// check if first and last are swapped (first_pos is always < last_pos)
 
-	std::cout << "erasing between: " << first_pos << " and " << last_pos << std::endl;
+	//std::cout << "erasing between: " << first_pos << " and " << last_pos << std::endl;
 
 	bool overflow = EraseBetween(first_pos, last_pos);
 	if(overflow) {
@@ -209,7 +209,9 @@ std::vector<Point> Area::GetPoints() {
 }
 
 Point Area::GetPointAt(std::vector<Point>::iterator i, int offset) {
-	return *(i+offset%mPoints.size());
+	while(offset<0) offset+=mPoints.size();
+	offset %= mPoints.size();
+	return *(i+offset);
 }
 
 int Area::GetPointIndex(const Point p) {
@@ -233,10 +235,10 @@ bool Area::IsPointInside(const Point p) {
 
 	while(up.Y >= 0) {
 		if(PointOnPolygon(up)) {
-			std::vector<Point>::iterator up_iter = std::find(mPoints.begin(), mPoints.end(), up);
+			int up_index = GetPointIndex(up);
 
-			Point before = GetPointAt(up_iter,-1);
-			Point after = GetPointAt(up_iter,+1);
+			Point before = GetPointAt(mPoints.begin(),up_index-1);
+			Point after = GetPointAt(mPoints.begin(),up_index+1);
 
 			int dx = abs(before.X - after.X);
 			if(last_was_middle == 0) {
