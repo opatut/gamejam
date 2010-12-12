@@ -82,30 +82,35 @@ bool AiActor::Evolve() {
 			if(r == 2) click = cl+Point( 0,-1);
 			if(r == 3) click = cl+Point( 0, 1);
 		}
-
+		Clicked(click);
 	} else if (task_b > task_c) {
-		std::cout << mName << " chooses to increase its area " << std::endl;
-		// INCREASE AREA
-		// choose random point and move out
-		Area& rndarea = mAreas[rand()%mAreas.size()];
-		Point rndpoint = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand());
-		click = rndpoint;
-		int r = rand();
-		int i = 0;
-		while(i < 3 && (click == rndpoint || rndarea.IsPointInside(click)) ) {
-			if(r%4 == 0) click = rndpoint+Point(-1, 0);
-			if(r%4 == 1) click = rndpoint+Point( 1, 0);
-			if(r%4 == 2) click = rndpoint+Point( 0,-1);
-			if(r%4 == 3) click = rndpoint+Point( 0, 1);
-			++i;
-			++r;
+		while(true) {
+			std::cout << mName << " chooses to increase its area " << std::endl;
+			// INCREASE AREA
+			// choose random point and move out
+			int ai = rand()%mAreas.size();
+			std::cout << "ai " << ai << std::endl;
+			Area& rndarea = mAreas[ai];
+			Point rndpoint = rndarea.GetPointAt(rndarea.GetPoints().begin(), rand()%rndarea.GetPoints().size());
+			click = rndpoint;
+			int r = rand();
+			int i = 0;
+			while(i <= 3 && (click == rndpoint || rndarea.PointOnPolygon(click) || rndarea.IsPointInside(click)) ) {
+				if((r+i)%4 == 0) click = rndpoint+Point(-1, 0);
+				if((r+i)%4 == 1) click = rndpoint+Point( 1, 0);
+				if((r+i)%4 == 2) click = rndpoint+Point( 0,-1);
+				if((r+i)%4 == 3) click = rndpoint+Point( 0, 1);
+				std::cout << "Click = " << click.X<<" " << click.Y << std::endl;
+				++i;
+			}
+			if (Clicked(click))
+				break;
 		}
 	} else {
 		std::cout << mName << " chooses to attack someone" << std::endl;
 		// DECREASE OTHER'S AREA
 	}
 
-	Clicked(click);
 
 	std::cout<<std::endl;
 	return true;
