@@ -12,7 +12,9 @@ public:
 	void Update(float time_diff, sf::Vector2f offset);
 	void Draw(sf::RenderTarget& target);
 
+	void GetFirstLastPos(Point p, int& first_pos, int& last_pos);
 	Point GetClosestPoint(const Point p);
+	int GetClosestPointNum(const Point p);
 	bool PointOnPolygon(const Point p);
 
 	void SetColor(const sf::Color color);

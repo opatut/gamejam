@@ -59,6 +59,23 @@ Point Area::GetClosestPoint(const Point p) {
 	return closest;
 }
 
+int Area::GetClosestPointNum(const Point p) {
+	Point closest = p;
+	int cl_id = 0;
+	int last_distance = 1000000;
+
+	unsigned int i = 0;
+	for(; i < mPoints.size(); i++) {
+		int d = mPoints[i].DistanceTo(p);
+		if(d < last_distance) {
+			closest = mPoints[i];
+			cl_id = i;
+			last_distance = d;
+		}
+	}
+	return i;
+}
+
 bool Area::PointOnPolygon(const Point p) {
 	return GetClosestPoint(p).DistanceTo(p) == 0;
 }
@@ -71,10 +88,9 @@ const sf::Color Area::GetColor() const {
 	return mColor;
 }
 
-bool Area::AddPoint(Point p) {
-	int first_pos = -1;
-	int last_pos = -1;
-
+void Area::GetFirstLastPos(Point p, int& first_pos, int& last_pos) {
+	first_pos = -1;
+	last_pos = -1;
 	for(int i = 0; i < mPoints.size(); ++i) {
 		if(mPoints[i].DistanceTo(p) == 1) {
 			if(first_pos == -1) {
@@ -97,6 +113,11 @@ bool Area::AddPoint(Point p) {
 			}
 		}
 	}
+}
+
+bool Area::AddPoint(Point p) {
+	int first_pos, last_pos;
+	GetFirstLastPos(p, first_pos, last_pos);
 
 	if (last_pos == -1)
 		return false;
@@ -189,7 +210,11 @@ bool Area::IsPointInside(const Point p) {
 }
 
 Point Area::ContactWithActor(int own_id) {
-	for(unsigned int i = 0; i < mPoints.size(); ++i) {
+	int rnd = rand()%mPoints.size();
+	for(unsigned int j = 0; j < mPoints.size(); ++j) {
+		int i = j + rnd;
+		while(i >= mPoints.size())
+			i -= mPoints.size();
 		for(int x = -1; x <= 1; ++x) {
 			for(int y = -1; y <= 1; ++y) {
 				if(y!=0 || x!=0) {

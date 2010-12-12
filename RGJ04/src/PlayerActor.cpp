@@ -2,6 +2,7 @@
 
 PlayerActor::PlayerActor(int id) {
 	mId = id;
+	mScore = 0;
 }
 
 void PlayerActor::InitializeAreas() {

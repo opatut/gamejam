@@ -27,9 +27,7 @@ void World::Update(float time_diff) {
 	Point mouse_point = PointAt(mouse_position);
 
 	if (mPlayerActor) {
-		Point closest = mPlayerActor->GetClosestPoint(mouse_point);
-		int d = closest.DistanceTo(mouse_point);
-		if(d == 1) {
+		if(mPlayerActor->IsValidAddPoint(mouse_point, false)) {
 			mMouseHighlight = sf::Shape::Rectangle( mouse_point.X*BLOCKSIZE-4, mouse_point.Y*BLOCKSIZE-3, 7, 7, sf::Color(255,255,255));
 			mMouseHighlight.SetPosition(GetOffset());
 		} else {
@@ -67,7 +65,10 @@ void World::Draw(sf::RenderTarget& target) {
 
 bool World::Clicked(sf::Vector2i mouse_pos) {
 	Point p = PointAt(sf::Vector2f(mouse_pos.x, mouse_pos.y));
-	return mPlayerActor->Clicked(p);
+	if(mPlayerActor->IsValidAddPoint(p, false))
+		return mPlayerActor->Clicked(p);
+	else
+		return false;
 }
 
 sf::Vector2f World::GetOffset() {

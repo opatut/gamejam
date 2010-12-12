@@ -20,6 +20,7 @@ sf::RenderWindow app;
 sf::Font monofont;
 sf::Image thisisyou_image;
 sf::Music background_music;
+float music_volume = 1.f;
 int game_mode = 0;
 bool music_running = true;
 
@@ -64,10 +65,7 @@ bool game() {
 	boost::ptr_vector<sf::Text> actor_labels;
 	sf::Text* actor_label;
 	for(int i = 0; i < num_actors; i++) {
-		if(i==0)
-			actor_label = new sf::Text("> " + world.GetActorById(i).GetName(), monofont, 14);
-		else
-			actor_label = new sf::Text("  " + world.GetActorById(i).GetName(), monofont, 14);
+		actor_label = new sf::Text(world.GetActorById(i).ToString(i==0), monofont, 14);
 		actor_label->SetPosition(15,WINDOW_HEIGHT/2-FIELD_SIZE/2+20*i);
 		actor_label->SetColor(world.GetActorById(i).GetColor());
 		actor_labels.push_back(actor_label);
@@ -95,7 +93,7 @@ bool game() {
 		clock.Reset();
 
 		if(actor_done) {
-			actor_labels[next_actor].SetString("  " + world.GetActorById(next_actor).GetName());
+			actor_labels[next_actor].SetString(world.GetActorById(next_actor).ToString(false));
 
 			next_actor++;
 			if(next_actor >= num_actors)
@@ -103,7 +101,7 @@ bool game() {
 			time_to_action = TIME_PER_ROUND / num_actors;
 			actor_done = false;
 
-			actor_labels[next_actor].SetString("> " + world.GetActorById(next_actor).GetName());
+			actor_labels[next_actor].SetString(world.GetActorById(next_actor).ToString(true));
 		} else if(time_to_action <= 0 && next_actor != 0) {
 			// let ai actor perform action
 			actor_done = world.GetActorById(next_actor).Evolve();
@@ -121,15 +119,14 @@ bool game() {
 					leaving_value = true;
 				} else if(event.Key.Code == sf::Key::M) {
 					ToggleMusic();
+				} else if(event.Key.Code == sf::Key::S) {
+					if(next_actor == 0)
+						actor_done = true;
 				}
 			} else if(event.Type == sf::Event::MouseButtonPressed) {
 				sf::Vector2i m(event.MouseButton.X, event.MouseButton.Y);
 
-				if(m.x >= (WINDOW_WIDTH - FIELD_SIZE) / 2 &&
-				   m.x <= (WINDOW_WIDTH - FIELD_SIZE) / 2 + FIELD_SIZE &&
-				   m.y >= (WINDOW_HEIGHT - FIELD_SIZE) / 2 &&
-				   m.y <= (WINDOW_HEIGHT- FIELD_SIZE) / 2 + FIELD_SIZE &&
-				   next_actor == 0)	{
+				if(next_actor == 0)	{
 					actor_done = world.Clicked(m);
 				}
 
@@ -148,10 +145,21 @@ bool game() {
 		else rect_alpha += time_diff*1.5;
 		if(rect_alpha < 0)
 			rect_alpha = 0;
-		if(rect_alpha > 1 && leaving) {
+		if(rect_alpha > 1)
+			rect_alpha = 1;
+		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
+
+		// MUSIC FADING
+		if(leaving && !leaving_value && music_volume > 0) {
+			music_volume -= 2*time_diff;
+			if(music_volume < 0)
+				music_volume = 0;
+			background_music.SetVolume(music_volume*100);
+		}
+
+		if(rect_alpha >= 1 && leaving && (leaving_value || music_volume == 0)) {
 			return leaving_value;
 		}
-		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
 
 		// DRAW
 		app.Clear(sf::Color(0,0,0));
@@ -240,8 +248,18 @@ bool menu() {
 		}
 
 		// UPDATE
+		// MUSIC FADING
+		if(leaving && !leaving_value && music_volume > 0) {
+			music_volume -= 2*time_diff;
+			if(music_volume < 0)
+				music_volume = 0;
+			background_music.SetVolume(music_volume*100);
+		}
+
 		if(music_running) menu[3].SetString("Music on");
 		else menu[3].SetString("Music off");
+
+
 		for(int i = 0; i < menu.size(); ++i) {
 			if(i==active_entry) {
 				menu[i].SetStyle(sf::Text::Bold);
@@ -253,14 +271,20 @@ bool menu() {
 			menu[i].SetPosition(WINDOW_WIDTH / 2 - menu[i].GetRect().Width / 2, WINDOW_HEIGHT - menu.size()*40 - 40 + i*40);
 		}
 
+		// FADING
 		if(!leaving) rect_alpha -= time_diff*0.5;
 		else rect_alpha += time_diff;
 		if(rect_alpha < 0)
 			rect_alpha = 0;
-		if(rect_alpha > 1 && leaving) {
+		if(rect_alpha > 1)
+			rect_alpha = 1;
+
+		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
+
+		if(rect_alpha >= 1 && leaving && (leaving_value || music_volume == 0)) {
 			return leaving_value;
 		}
-		black_rect.SetColor(sf::Color(0,0,0,255*rect_alpha));
+
 
 		if(show_credits) {
 			credits_time -= time_diff;

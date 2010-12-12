@@ -14,6 +14,7 @@ public:
 
 	bool Evolve();
 	Point ContactWithActor();
+
 private:
 	float mMode; // -1 = passive/defensive, 0 = normal, 1 = active/offensive
 };

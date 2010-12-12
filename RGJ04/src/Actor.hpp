@@ -2,6 +2,7 @@
 #define ACTOR_HPP
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/lexical_cast.hpp>
 #include <SFML/Graphics.hpp>
 #include "Area.hpp"
 
@@ -18,9 +19,16 @@ public:
 
 	virtual bool Evolve();
 
-	Point GetClosestPoint(const Point p);
+	bool IsValidAddPoint(const Point p, bool needs_outside = false);
+
+	Point GetClosestPoint(const Point p, int offset = 0);
+	bool PointOnPolygon(const Point p);
+	bool IsPointInside(const Point p);
 
 	bool Clicked(const Point p);
+	void AddScore(int score);
+
+	std::string ToString(bool current);
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;
@@ -32,6 +40,7 @@ public:
 protected:
 	int mId;
 	std::string mName;
+	int mScore;
 	boost::ptr_vector<Area> mAreas;
 	sf::Color mColor;
 
