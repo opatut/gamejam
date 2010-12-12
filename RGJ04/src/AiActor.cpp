@@ -42,12 +42,13 @@ void AiActor::Update(float time_diff, sf::Vector2f offset) {
 }
 
 bool AiActor::Evolve() {
+	std::cout<<std::endl;
 	Point click;
 	// Think about a task to do
 	// a) to the center (when there is someone or in offensive mode)
 	// b) increase area (when area low or in defensive mode)
 	// c) decrease other's area (when in contact)
-	float task_a, task_b, task_c, task_d; // rate each from -1 to 1
+	float task_a, task_b, task_c; // rate each from -1 to 1
 	task_a = mMode;
 	task_b = -mMode;
 	task_c = -1;
@@ -65,7 +66,9 @@ bool AiActor::Evolve() {
 		task_c = 1;
 	}
 
-	if(true || task_a > task_b && task_a > task_c) {
+	//std::cout << task_a << " " << task_b << " " << task_c << std::endl;
+
+	if(task_a > task_b && task_a > task_c) {
 		std::cout << mName << " chooses to go to the center " << std::endl;
 		// TO THE CENTER
 		// get some point close to center and area
@@ -89,6 +92,8 @@ bool AiActor::Evolve() {
 	}
 
 	Clicked(click);
+
+	std::cout<<std::endl;
 	return true;
 }
 

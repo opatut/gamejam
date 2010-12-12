@@ -13,12 +13,14 @@ public:
 	void Draw(sf::RenderTarget& target);
 
 	Point GetClosestPoint(const Point p);
+	bool PointOnPolygon(const Point p);
 
 	void SetColor(const sf::Color color);
 	const sf::Color GetColor() const;
 
-	void AddPoint(Point p);
+	bool AddPoint(Point p);
 	Point GetPointAt(std::vector<Point>::iterator i, int offset = 0);
+	bool IsPointInside(const Point p);
 	Point ContactWithActor(int own_id);
 private:
 	sf::Vector2f mOffset;

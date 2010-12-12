@@ -21,6 +21,7 @@ sf::Font monofont;
 sf::Image thisisyou_image;
 sf::Music background_music;
 int game_mode = 0;
+bool music_running = true;
 
 
 bool game() {
@@ -145,8 +146,8 @@ bool menu() {
 
 	boost::ptr_vector<sf::Text> menu;
 	int active_entry = game_mode;
-	std::string entries[] = { "2 Player match", "4 Player match", "8 Player match", "Credits", "Quit game" };
-	int num_entries = 5;
+	std::string entries[] = { "2 Player match", "4 Player match", "8 Player match", "Music on", "Credits", "Quit game" };
+	int num_entries = 6;
 
 	for(int i = 0; i < num_entries; i++) {
 		sf::Text* t = new sf::Text(entries[i], monofont, 20);
@@ -154,10 +155,10 @@ bool menu() {
 	}
 
 	sf::Text title("AMEBOID", monofont, 120);
-	title.SetPosition(WINDOW_WIDTH/2 - title.GetRect().Width/2, WINDOW_HEIGHT/2 - title.GetRect().Height/2 - 50);
+	title.SetPosition(WINDOW_WIDTH/2 - title.GetRect().Width/2, WINDOW_HEIGHT/2 - title.GetRect().Height/2 - 100);
 
 	sf::Text surtitle("opatut presents", monofont, 30);
-	surtitle.SetPosition(WINDOW_WIDTH/2 - surtitle.GetRect().Width/2, WINDOW_HEIGHT/4);
+	surtitle.SetPosition(WINDOW_WIDTH/2 - surtitle.GetRect().Width/2, WINDOW_HEIGHT/2 - 200);
 
 	sf::Text credits_label("", monofont, 20);
 	int credits_index = 0;
@@ -185,12 +186,17 @@ bool menu() {
 					return false;
 				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
 					game_mode = active_entry;
-					if(active_entry == 3)
+					if(active_entry == 3) {
+						music_running = !music_running;
+						if(music_running) background_music.Play();
+						else background_music.Pause();
+					} else if(active_entry == 4) {
 						show_credits = true;
-					else if(active_entry == 4)
+					} else if(active_entry == 5) {
 						return false;
-					else
+					} else {
 						return true;
+					}
 				} else if(event.Key.Code == sf::Key::Down) {
 					active_entry++;
 					if(active_entry >= menu.size())
@@ -204,6 +210,8 @@ bool menu() {
 		}
 
 		// UPDATE
+		if(music_running) menu[3].SetString("Music on");
+		else menu[3].SetString("Music off");
 		for(int i = 0; i < menu.size(); ++i) {
 			if(i==active_entry) {
 				menu[i].SetStyle(sf::Text::Bold);
@@ -227,7 +235,7 @@ bool menu() {
 				if(credits_index < credits_count) {
 					credits_label.SetString(credits[credits_index]);
 					credits_index++;
-					credits_label.SetPosition(WINDOW_WIDTH / 2 - credits_label.GetRect().Width/2, 10);
+					credits_label.SetPosition(WINDOW_WIDTH / 2 - credits_label.GetRect().Width/2, 40);
 				} else {
 					show_credits = false;
 					credits_index = 0;

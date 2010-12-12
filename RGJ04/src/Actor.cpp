@@ -47,8 +47,9 @@ bool Actor::Clicked(const Point p) {
 	bool done = false;
 	for(unsigned int i = 0; i < mAreas.size(); ++i) {
 		if(mAreas[i].GetClosestPoint(p).DistanceTo(p) == 1) {
-			mAreas[i].AddPoint(p);
-			done = true;
+			if(mAreas[0].IsPointInside(p)) std::cout << "New point was INSIDE." << std::endl;
+			else std::cout << "New point was OUTSIDE." << std::endl;
+			done = mAreas[i].AddPoint(p);
 		}
 	}
 	return done;
