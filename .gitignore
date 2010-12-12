@@ -1,5 +1,5 @@
 *.bin
-*/bin/game
+*/bin/ameboid
 qtcreator-build/
 */build/
 CMakeLists.txt.user

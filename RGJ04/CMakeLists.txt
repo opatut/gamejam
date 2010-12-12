@@ -4,8 +4,8 @@ project(RGJ04)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-extras/")
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
+#set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_MULTITHREADED ON)
 
 find_package(SFML 2 COMPONENTS audio graphics system window REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
@@ -25,11 +25,11 @@ aux_source_directory(src/ sources)
 
 include_directories(src/)
 
-add_executable(game
+add_executable(ameboid
     ${sources}
 )
 
-target_link_libraries(game
-	${Boost_LIBRARIES}
+target_link_libraries(ameboid
+    #${Boost_LIBRARIES}
 	${SFML_LIBRARIES}
 )

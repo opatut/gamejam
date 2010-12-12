@@ -11,10 +11,10 @@ go: build bakerun
 godb: build bake gdb
 
 run:
-	cd bin; ./game
+	cd bin; ./ameboid
 
 gdb:
-	cd bin; gdb ./game
+	cd bin; gdb ./ameboid
 
 clean:
 	rm -r build
