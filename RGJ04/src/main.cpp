@@ -210,7 +210,8 @@ bool menu() {
 				leaving_value = false; // stop program
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
-					return false;
+					leaving = true;
+					leaving_value = false;
 				} else if(event.Key.Code == sf::Key::M) {
 					ToggleMusic();
 				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
