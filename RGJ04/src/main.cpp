@@ -272,6 +272,7 @@ bool menu() {
 				} else {
 					show_credits = false;
 					credits_index = 0;
+					credits_time = 0;
 				}
 			}
 		}
