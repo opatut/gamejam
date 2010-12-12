@@ -125,7 +125,10 @@ bool game() {
 				leaving = true;
 				leaving_value = false;
 			} else if(event.Type == sf::Event::KeyPressed) {
-				if(event.Key.Code == sf::Key::Escape) {
+				if(game_over) {
+					leaving = true;
+					leaving_value = true;
+				} else if(event.Key.Code == sf::Key::Escape) {
 					if(game_over) {
 						leaving = true;
 						leaving_value = true;
