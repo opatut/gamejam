@@ -24,6 +24,12 @@ int game_mode = 0;
 bool music_running = true;
 
 
+void ToggleMusic() {
+	music_running = !music_running;
+	if(music_running) background_music.Play();
+	else background_music.Pause();
+}
+
 bool game() {
 	// WORLD ETC.
 
@@ -113,6 +119,8 @@ bool game() {
 				if(event.Key.Code == sf::Key::Escape) {
 					leaving = true;
 					leaving_value = true;
+				} else if(event.Key.Code == sf::Key::M) {
+					ToggleMusic();
 				}
 			} else if(event.Type == sf::Event::MouseButtonPressed) {
 				sf::Vector2i m(event.MouseButton.X, event.MouseButton.Y);
@@ -203,12 +211,12 @@ bool menu() {
 			} else if(event.Type == sf::Event::KeyPressed) {
 				if(event.Key.Code == sf::Key::Escape) {
 					return false;
+				} else if(event.Key.Code == sf::Key::M) {
+					ToggleMusic();
 				} else if(event.Key.Code == sf::Key::Return or event.Key.Code == sf::Key::Space) {
 					game_mode = active_entry;
 					if(active_entry == 3) {
-						music_running = !music_running;
-						if(music_running) background_music.Play();
-						else background_music.Pause();
+						ToggleMusic();
 					} else if(active_entry == 4) {
 						show_credits = true;
 					} else if(active_entry == 5) {
