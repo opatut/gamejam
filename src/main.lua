@@ -35,6 +35,9 @@ COLORS.blue     = {0, 0, 255}
 COLORS.indigo   = {75, 0, 130}
 COLORS.violet   = {143, 0, 255}
 
+COSTS = {}
+COSTS.bomb = 0.2
+
 function reset()
     -- start game
     states = {}
@@ -51,11 +54,20 @@ function love.load()
     -- setMute(MUTE)
 
     resources:addImage("particle", "particle.png")
+    resources:addImage("ring", "ring.png")
     resources:addImage("container_front", "container-front.png")
     resources:addImage("container_back", "container-back.png")
+    resources:addImage("tank_bottom", "tank-bottom.png")
+    resources:addImage("tank_top", "tank-top.png")
+    for i, k in ipairs(COLORNAMES) do
+        resources:addImage(k, "icons/" .. k .. ".png")
+    end
+    resources:addImage("octagon", "icons/octagon.png")
+    resources:addImage("rainbow", "icons/rainbow.png")
 
     -- load fonts
-    resources:addFont("normal", "DejaVuSans.ttf", 20)
+    resources:addFont("normal", "DejaVuSans.ttf", 12)
+    resources:addFont("large", "DejaVuSans.ttf", 24)
 
     -- load music
     -- resources:addMusic("background", "background-music.ogg")
@@ -65,6 +77,7 @@ function love.load()
 
     resources:load()
 
+    love.graphics.setFont(resources.fonts.normal)
     reset()
 
     -- resources.music.background:play()

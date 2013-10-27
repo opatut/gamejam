@@ -6,12 +6,13 @@ require("entities/explosion")
 
 Bullet = class("Bullet", Entity)
 
-function Bullet:__init()
+function Bullet:__init(bounces)
     Entity.__init(self)
     self.z = -1000
     self.physicsObject = {}
     self.radius = 1
-    self.lifetime = 1
+    self.bounces = bounces or 1
+    self.lifetime = self.bounces
 end
 
 function Bullet:onAdd()
@@ -22,6 +23,7 @@ function Bullet:onAdd()
     self.physicsObject.fixture:setUserData(self)
     self.physicsObject.fixture:setCategory(PHYSICS_GROUPS.BULLET)
     self.physicsObject.fixture:setMask(PHYSICS_GROUPS.PLAYER)
+    self.physicsObject.fixture:setRestitution(1)
 
     self.physicsObject.body:setLinearVelocity(self.velocity:unpack())
 end
@@ -31,11 +33,17 @@ function Bullet:onRemove()
 end
 
 function Bullet:onCollide(other)
-    self:kill()
+    if other.__name ~= "Tank" and other.__name ~= "Bullet" then
+        self.bounces = self.bounces - 1
+        if self.bounces <= 0 then
+            self:kill()
+        end
+    end
 end
 
 function Bullet:onUpdate(dt)
     self.position = Vector(self.physicsObject.body:getX(), self.physicsObject.body:getY())
+    self.velocity = Vector(self.physicsObject.body:getLinearVelocity())
 end
 
 function Bullet:onDraw()

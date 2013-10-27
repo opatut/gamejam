@@ -10,12 +10,15 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="41.778881"
-   height="96.742477"
+   width="16"
+   height="80"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="container.svg"
+   inkscape:export-filename="/home/paul/src/jam/data/container-front.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <linearGradient
@@ -67,24 +70,6 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3781"
-       id="linearGradient3787"
-       x1="315"
-       y1="752.36218"
-       x2="305"
-       y2="752.36218"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3793"
-       id="linearGradient3791"
-       gradientUnits="userSpaceOnUse"
-       x1="315"
-       y1="752.36218"
-       x2="305"
-       y2="752.36218" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3781"
        id="linearGradient3820"
        gradientUnits="userSpaceOnUse"
        x1="315"
@@ -108,9 +93,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.5263069"
-     inkscape:cx="20.833084"
-     inkscape:cy="48.200789"
+     inkscape:zoom="1"
+     inkscape:cx="1.9193451"
+     inkscape:cy="5.5330087"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -131,8 +116,8 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       originx="-288.63841px"
-       originy="-251.13891px" />
+       originx="-302px"
+       originy="-259.98718px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -150,16 +135,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-288.63841,-704.48079)">
-    <rect
-       style="fill:#1a1a1a;fill-rule:evenodd;stroke:#000000;stroke-width:0.20114382000000000px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       id="rect2985"
-       width="41.577736"
-       height="96.541336"
-       x="288.73898"
-       y="704.58136" />
+     transform="translate(-302,-712.375)">
     <g
-       id="g3824">
+       id="g3824"
+       inkscape:export-filename="/home/paul/src/jam/data/container-back.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <rect
          y="717.36218"
          x="305"
@@ -197,5 +178,13 @@
          id="rect3803"
          style="fill:#ffffff;fill-opacity:0.07555554" />
     </g>
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1"
+       id="rect3847"
+       width="2.96821"
+       height="5.1162567"
+       x="0.039055392"
+       y="74.961853"
+       transform="translate(302,712.375)" />
   </g>
 </svg>

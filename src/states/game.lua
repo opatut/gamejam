@@ -7,12 +7,20 @@ require("entities/tank")
 require("entities/building")
 require("entities/blob")
 require("entities/enemy")
+require("entities/bomb")
 
 Game = class("Game", GameState)
 
 function Game:__init()
+    self.offset = Vector(0, 0)
     self.paused = false
     self:reset()
+    self.restart = 0
+end
+
+function Game:died()
+    self.world:add(Explosion(self.tank.position, 10))
+    self.restart = 1
 end
 
 function Game:reset()
@@ -101,6 +109,11 @@ function Game:reset()
     self.enemySpawn = 0
 end
 
+function Game:hasBuildingAt(x, y)
+    local n = MAPSIZE / 2
+    return (x >= -n and x <= n and y >= -n and y <= n) and self.map[x][y]
+end
+
 function Game:getKeyboardVector()
     local v = Vector()
     if love.keyboard.isDown("a") or love.keyboard.isDown("left")  then v.x = v.x - 1 end
@@ -111,18 +124,21 @@ function Game:getKeyboardVector()
 end
 
 function Game:onUpdate(dt)
+    self.restart = self.restart - dt
     self.world:update(dt)
-    self.offset = Vector(love.graphics.getWidth(), love.graphics.getHeight()) * 0.5 - self.tank.position
+    if not self.tank.dead then
+        self.offset = Vector(love.graphics.getWidth(), love.graphics.getHeight()) * 0.5 - self.tank.position
 
-    self.enemySpawn = self.enemySpawn - dt
-    if self.enemySpawn <= 0 then
-        local p
-        repeat
-            p = Vector(math.random(-MAPSIZE/2, MAPSIZE/2), math.random(-MAPSIZE/2, MAPSIZE/2))
-        until Vector.dist(p*GRIDSIZE, self.tank.position) > (SIZE/2):len() and not self.map[p.x][p.y]
+        self.enemySpawn = self.enemySpawn - dt
+        if self.enemySpawn <= 0 then
+            local p
+            repeat
+                p = Vector(math.random(-MAPSIZE/2, MAPSIZE/2), math.random(-MAPSIZE/2, MAPSIZE/2))
+            until Vector.dist(p*GRIDSIZE, self.tank.position) > (SIZE/2):len() and not self.map[p.x][p.y]
 
-        self.world:add(Enemy(p*GRIDSIZE))
-        self.enemySpawn = math.random(0.5, 2.0)
+            self.world:add(Enemy(p*GRIDSIZE))
+            self.enemySpawn = math.random(0.5, 1.0)
+        end
     end
 end
 
@@ -140,8 +156,10 @@ function Game:onDraw()
     love.graphics.pop()
 
     -- draw charges
+    local space = 60
+    local left = (SIZE.x - 7*space)/2
     for i, c in ipairs(COLORNAMES) do
-        local x, y = 20 + (i-1) * 20, SIZE.y - 10
+        local x, y =  left + (i-1) * space, SIZE.y - 10
         love.graphics.setColor(255, 255, 255)
         love.graphics.draw(resources.images.container_back, x, y, 0, 1, 1, 0, resources.images.container_back:getHeight())
 
@@ -151,15 +169,25 @@ function Game:onDraw()
 
         love.graphics.setColor(255, 255, 255)
         love.graphics.draw(resources.images.container_front, x, y, 0, 1, 1, 0, resources.images.container_front:getHeight())
-    end
-    love.graphics.setColor(255, 255, 255, 200)
-    local h = SIZE.y-15-0.2*70
-    love.graphics.line(10, h, 7*20+25, h)
 
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.print(love.timer.getFPS(), 10, 10)
-    local p = self.tank.position * (1/GRIDSIZE)
-    love.graphics.print(math.floor(p.x+0.5) .. "/" .. math.floor(p.y+0.5), 10, 40)
+        --love.graphics.setColor(unpack(COLORS[c]))
+        love.graphics.setColor(255, 255, 255, self.tank.specials[c] and 255 or 100)
+        love.graphics.draw(resources.images[c], x+10, y - 110, 0, 0.6, 0.6, 27, 27)
+
+        love.graphics.print(i, x+4, y-95)
+    end
+
+    if self.tank.dead and self.restart <= 0 then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.setFont(resources.fonts.large)
+        love.graphics.printf("Click to restart", SIZE.x/2-150, SIZE.y/2-10, 300, "center")
+        love.graphics.setFont(resources.fonts.normal)
+    end
+
+    -- love.graphics.setColor(255, 255, 255)
+    -- love.graphics.print(love.timer.getFPS(), 10, 10)
+    -- local p = self.tank.position * (1/GRIDSIZE)
+    -- love.graphics.print(math.floor(p.x+0.5) .. "/" .. math.floor(p.y+0.5), 10, 40)
 end
 
 function Game:onKeyPressed(k, u)
@@ -167,9 +195,30 @@ function Game:onKeyPressed(k, u)
         self.paused = not self.paused
     elseif k == "q" then
         stack:pop()
+    elseif k == " " and not self.tank.dead then
+        local available = true
+        for i, c in ipairs(COLORNAMES) do
+            if self.tank.charges[c] < COSTS.bomb then available = false end
+        end
+        if available then
+            self.world:add(Bomb(self.tank.position))
+            for i, c in ipairs(COLORNAMES) do
+                self.tank:charge(c, -COSTS.bomb)
+            end
+        end
+    elseif k == "1" or k == "2" or k == "3" or k == "4" or k == "5" or k == "6" or k == "7" then
+        self.tank.specials[COLORNAMES[tonumber(k)]] = not self.tank.specials[COLORNAMES[tonumber(k)]]
     end
 end
 
-function Game:onMousePressed()
-    self.tank:shoot()
+function Game:onMousePressed(x, y, button)
+    if button == "l" then
+        if self.tank.dead and self.restart < 0 then
+            self:reset()
+        end
+    elseif button == "r" then
+        if not self.tank.dead then
+            self.tank:special()
+        end
+    end
 end

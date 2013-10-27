@@ -33,18 +33,22 @@ function Enemy:onRemove()
 end
 
 function Enemy:onUpdate(dt)
+    if states.game.tank.dead then return end
     local dir = (states.game.tank.position - self.position):normalized()
 
     local currentVelocity = Vector(self.physicsObject.body:getLinearVelocity())
-    local targetVelocity = dir * 200
+    local targetVelocity = dir * 280
     local factor = dt * 10
     local velocity = currentVelocity * (1-factor) + targetVelocity * factor
     self.physicsObject.body:setLinearVelocity(velocity.x, velocity.y)
+
+    self.rotation = velocity:angle()
 end
 
 function Enemy:onDraw()
-    love.graphics.setColor(255, 0, 0)
-    love.graphics.circle("fill", self.position.x, self.position.y, 16)
+    love.graphics.setColor(100, 100, 100)
+    love.graphics.draw(resources.images.tank_bottom, self.position.x, self.position.y, math.pi/2+self.rotation, 0.25, 0.25,
+        resources.images.tank_bottom:getWidth()/2, resources.images.tank_bottom:getHeight()/2)
 end
 
 function Enemy:onCollide(other)

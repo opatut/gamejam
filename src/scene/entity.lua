@@ -38,7 +38,7 @@ function Entity:draw()
 end
 
 function Entity:progress()
-    return self.age/self.lifetime
+    return math.max(0, math.min(1, self.age/self.lifetime))
 end
 
 

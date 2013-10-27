@@ -9,6 +9,8 @@ function Building:__init(x, y, width, height)
     self.z = -100
     self.size = Vector(width or 1, height or 1)
     self.position = Vector(x * GRIDSIZE, y*GRIDSIZE)
+    self.x = x
+    self.y = y
     self.physicsObject = {}
 
 end
@@ -25,7 +27,25 @@ function Building:onUpdate(dt)
 end
 
 function Building:onDraw()
-    love.graphics.setColor(50, 50, 50)
+    love.graphics.setColor(10, 10, 10)
     local s = self.size * GRIDSIZE
     love.graphics.rectangle("fill", self.position.x - s.x/2, self.position.y - s.y/2, s.x, s.y)
+
+    love.graphics.setColor(255, 255, 255)
+    if not states.game:hasBuildingAt(self.x+1, self.y+0) then
+        love.graphics.line( self.position.x + GRIDSIZE/2, self.position.y - GRIDSIZE/2,
+                            self.position.x + GRIDSIZE/2, self.position.y + GRIDSIZE/2 )
+    end
+    if not states.game:hasBuildingAt(self.x-1, self.y+0) then
+        love.graphics.line( self.position.x - GRIDSIZE/2, self.position.y - GRIDSIZE/2,
+                            self.position.x - GRIDSIZE/2, self.position.y + GRIDSIZE/2 )
+    end
+    if not states.game:hasBuildingAt(self.x+0, self.y+1) then
+        love.graphics.line( self.position.x + GRIDSIZE/2, self.position.y + GRIDSIZE/2,
+                            self.position.x - GRIDSIZE/2, self.position.y + GRIDSIZE/2 )
+    end
+    if not states.game:hasBuildingAt(self.x+0, self.y-1) then
+        love.graphics.line( self.position.x + GRIDSIZE/2, self.position.y - GRIDSIZE/2,
+                            self.position.x - GRIDSIZE/2, self.position.y - GRIDSIZE/2 )
+    end
 end
