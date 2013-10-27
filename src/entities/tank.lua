@@ -12,6 +12,9 @@ function Tank:__init()
     self.physicsObject = {}
 
     self.shootTimeout = 0
+
+    self.charges = {}
+    for i, k in ipairs(COLORNAMES) do self.charges[k] = 0.5 end
 end
 
 function Tank:onAdd()
@@ -24,7 +27,7 @@ function Tank:onAdd()
 end
 
 function Tank:getBarrelVector()
-    local mouse = Vector(love.mouse.getPosition())
+    local mouse = states.game:mouse()
     local diff = mouse - self.position
     return diff:normalized()
 end
@@ -33,7 +36,7 @@ function Tank:onUpdate(dt)
     local dir = states.game:getKeyboardVector()
 
     local currentVelocity = Vector(self.physicsObject.body:getLinearVelocity())
-    local targetVelocity = dir * dt * 200 * 100
+    local targetVelocity = dir * 300
     local factor = dt * 10
     local velocity = currentVelocity * (1-factor) + targetVelocity * factor
     self.physicsObject.body:setLinearVelocity(velocity.x, velocity.y)
@@ -52,17 +55,46 @@ function Tank:onDraw()
     love.graphics.push()
     love.graphics.translate(self.position.x, self.position.y)
     love.graphics.rotate(self.rotation)
+    love.graphics.setColor(40, 40, 40)
+    love.graphics.rectangle("fill", -9, -5, 17, 10)
+    love.graphics.setColor(100, 100, 100)
+    love.graphics.rectangle("fill", -10, -7, 20, 2)
+    love.graphics.rectangle("fill", -10,  5, 20, 2)
+    love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(self.position.x, self.position.y)
+    love.graphics.rotate(self:getBarrelVector():angle())
     love.graphics.setColor(255, 255, 255)
-    local s = Vector(20, 15)
-    love.graphics.rectangle("fill", -s.x/2, -s.y/2, s.x, s.y)
+    love.graphics.rectangle("fill", -2, -2, 12, 4)
     love.graphics.pop()
 end
 
 function Tank:shoot()
+    -- local c = 0.005
     if self.shootTimeout > 0 then return end
     local bullet = Bullet()
     bullet.position = self.position
-    bullet.velocity = self:getBarrelVector() * 1500
+    bullet.velocity = self:getBarrelVector() * 500 + self.velocity
     self.world:add(bullet)
-    self.shootTimeout = 0.06
+    self.shootTimeout = 0.25
+    -- self:charge("yellow", -c)
+end
+
+function Tank:charge(color, diff)
+    self.charges[color] = math.min(1, math.max(0, self.charges[color] + diff))
+end
+
+function Tank:onCollide(other)
+    if other.__name == "Blob" then
+        other.age = 0
+        other.lifetime = 0.1
+        other.physicsObject.body:destroy()
+        other.physicsObject = nil
+        self:charge(other.color, 0.2)
+    elseif other.__name == "Enemy" then
+        other:kill()
+        self:kill()
+        states.game:reset()
+    end
 end

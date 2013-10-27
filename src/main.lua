@@ -15,14 +15,25 @@ SIZE = Vector(love.graphics.getWidth(), love.graphics.getHeight())
 HALFSIZE = SIZE / 2
 FULLSCREEN = settings:get("fullscreen", false)
 MUTE = settings:get("mute", false)
-GRIDSIZE=50
+GRIDSIZE=128
+MAPSIZE=32
 
 PHYSICS_GROUPS = {}
 PHYSICS_GROUPS.PLAYER = 0x0001
 PHYSICS_GROUPS.ENEMY  = 0x0002
 PHYSICS_GROUPS.BULLET = 0x0004
 PHYSICS_GROUPS.WORLD  = 0x0008
+PHYSICS_GROUPS.ITEM   = 0x0010
 
+COLORNAMES = {"red", "orange", "yellow", "green", "blue", "indigo", "violet"}
+COLORS = {}
+COLORS.red      = {255, 0, 0}
+COLORS.orange   = {255, 127, 0}
+COLORS.yellow   = {255, 255, 0}
+COLORS.green    = {0, 255, 0}
+COLORS.blue     = {0, 0, 255}
+COLORS.indigo   = {75, 0, 130}
+COLORS.violet   = {143, 0, 255}
 
 function reset()
     -- start game
@@ -40,6 +51,8 @@ function love.load()
     -- setMute(MUTE)
 
     resources:addImage("particle", "particle.png")
+    resources:addImage("container_front", "container-front.png")
+    resources:addImage("container_back", "container-back.png")
 
     -- load fonts
     resources:addFont("normal", "DejaVuSans.ttf", 20)

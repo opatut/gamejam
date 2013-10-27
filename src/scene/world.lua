@@ -10,14 +10,8 @@ function World:beginContact(a, b, coll)
     local uA = a:getUserData()
     local uB = b:getUserData()
 
-    -- print("collision : " .. uA.__name .. " / " .. uB.__name)
-    if areUserData(uA, uB, "LampChain", "Wisp") then
-        if uA.__name == "LampChain" then
-            -- uB:kill()
-        else
-            -- uA:kill()
-        end
-    end
+    uA:onCollide(uB)
+    uB:onCollide(uA)
 end
 
 function World:endContact(a, b, coll)

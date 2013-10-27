@@ -2,6 +2,7 @@ require("util/helper")
 require("util/vector")
 
 require("scene/entity")
+require("entities/explosion")
 
 Bullet = class("Bullet", Entity)
 
@@ -10,7 +11,7 @@ function Bullet:__init()
     self.z = -1000
     self.physicsObject = {}
     self.radius = 1
-    self.lifetime = 5
+    self.lifetime = 1
 end
 
 function Bullet:onAdd()
@@ -23,6 +24,14 @@ function Bullet:onAdd()
     self.physicsObject.fixture:setMask(PHYSICS_GROUPS.PLAYER)
 
     self.physicsObject.body:setLinearVelocity(self.velocity:unpack())
+end
+
+function Bullet:onRemove()
+    self.world:add(Explosion(self.position))
+end
+
+function Bullet:onCollide(other)
+    self:kill()
 end
 
 function Bullet:onUpdate(dt)
@@ -39,4 +48,5 @@ function Bullet:onDraw()
     love.graphics.setColor(240, 250, 60, 150)
     love.graphics.draw(resources.images.particle, self.position.x, self.position.y, 0, 0.3, 0.3,
         resources.images.particle:getWidth()/2, resources.images.particle:getHeight()/2)
+    love.graphics.setBlendMode("alpha")
 end

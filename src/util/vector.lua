@@ -121,12 +121,12 @@ function Vector:rotated(phi)
 end
 
 function Vector:angle()
-    return self:angleTo(Vector(1, 0))
+    return math.atan2(self.y, self.x)
 end
 
 function Vector:angleTo(v2)
-    local diff = self-v2
-    return math.atan2(diff.y, diff.x)
+    return math.atan2(self.y - v2.y, self.x - v2.x)
+
     -- local quotient = (self:len() * v2:len())
     -- if quotient ~= 0 then
     --     local input = (self * v2) / quotient

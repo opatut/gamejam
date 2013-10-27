@@ -1,7 +1,7 @@
 function love.conf(t)
-    t.title = "Blahsomething"
+    t.title = "Rainbowmb"
     t.author = "opatut"
-    t.identity = "blahsomething"
+    t.identity = "rainbowmb"
     t.version = "0.8.0" -- Löve version
     t.console = false
     t.release = false

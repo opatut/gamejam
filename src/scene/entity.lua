@@ -37,6 +37,10 @@ function Entity:draw()
     self:onDraw()
 end
 
+function Entity:progress()
+    return self.age/self.lifetime
+end
+
 
 function Entity:kill()
     self.dead = true
@@ -46,6 +50,7 @@ function Entity:onDraw() end
 function Entity:onUpdate(dt) end
 function Entity:onAdd() end
 function Entity:onRemove() end
+function Entity:onCollide(other) end
 function Entity:getPosition()
     return self.position
 end

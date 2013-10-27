@@ -4,21 +4,13 @@ require("scene/entity")
 
 Building = class("Building", Entity)
 
-function Building:__init()
+function Building:__init(x, y, width, height)
     Entity.__init(self)
     self.z = -100
-    self.size = Vector(1, 1)
+    self.size = Vector(width or 1, height or 1)
+    self.position = Vector(x * GRIDSIZE, y*GRIDSIZE)
     self.physicsObject = {}
 
-    -- self.particleSystem = love.graphics.newParticleSystem(resources.images.particle, 128)
-    -- self.particleSystem:start()
-    -- self.particleSystem:setSizes(0.2, 0.9)
-    -- self.particleSystem:setColors(
-    --     240, 250, 50, 250,
-    --     250, 10, 10, 0)
-    -- self.particleSystem:setEmissionRate(100)
-    -- self.particleSystem:setParticleLife(0.5)
-    -- self.particleSystem:setSpread(0.5)
 end
 
 function Building:onAdd()
@@ -30,8 +22,6 @@ function Building:onAdd()
 end
 
 function Building:onUpdate(dt)
-    -- self.particleSystem:update(dt)
-    -- self.particleSystem:setPosition(self:getPosition().x, self:getPosition().y)
 end
 
 function Building:onDraw()
