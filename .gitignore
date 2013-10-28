@@ -3,3 +3,5 @@
 qtcreator-build/
 */build/
 CMakeLists.txt.user
+game.love
+*/pkg/
