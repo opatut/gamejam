@@ -1,8 +1,11 @@
 default: bake
 
 bake:
+	[ -f sfml/include/SFML/Config.hpp ] || (echo "Please initialize SFML submodule." && false)
+	(cd sfml && git apply ../sfml.patch)
+	(cd sfml && mkdir -p build && cd build && cmake .. && make -j4)
 	mkdir -p build 
-	cd build; cmake ..; make -j3
+	cd build; cmake ..; make -j4
 
 bakerun: build bake run
 

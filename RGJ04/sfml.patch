@@ -1,0 +1,19 @@
+commit c8b54f6d7b75c35c4a736a6ccbf4166aa5374e67
+Author: Laurent Gomila <laurent.gom@gmail.com>
+Date:   Tue Jan 31 19:05:43 2012 +0100
+
+    Fixed compile error in Linux/JoystickImpl.cpp
+
+diff --git a/src/SFML/Window/Linux/Joystick.cpp b/src/SFML/Window/Linux/Joystick.cpp
+index 2ad46b49..8dd64e80 100644
+--- a/src/SFML/Window/Linux/Joystick.cpp
++++ b/src/SFML/Window/Linux/Joystick.cpp
+@@ -27,7 +27,7 @@
+ ////////////////////////////////////////////////////////////
+ #include <SFML/Window/Joystick.hpp>
+ #include <sstream>
+-
++#include <unistd.h>
+ 
+ namespace sf
+ {
