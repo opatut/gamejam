@@ -52,7 +52,7 @@ function Bullet:onDraw()
     local e = self.position + self.velocity:normalized() * 3
     love.graphics.line(p.x, p.y, e.x, e.y)
 
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     love.graphics.setColor(240, 250, 60, 150)
     love.graphics.draw(resources.images.particle, self.position.x, self.position.y, 0, 0.3, 0.3,
         resources.images.particle:getWidth()/2, resources.images.particle:getHeight()/2)

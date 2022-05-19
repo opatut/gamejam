@@ -2,14 +2,14 @@ function love.conf(t)
     t.title = "Rainbowmb"
     t.author = "opatut"
     t.identity = "rainbowmb"
-    t.version = "0.8.0" -- Löve version
+    t.version = "11.4" -- Löve version
     t.console = false
     t.release = false
-    t.screen.width = 1000
-    t.screen.height = 740
-    t.screen.fullscreen = false
-    t.screen.vsync = true
-    t.screen.fsaa = 0
+    t.window.width = 1000
+    t.window.height = 740
+    t.window.fullscreen = false
+    t.window.vsync = 1
+    t.window.msaa = 0
 
     t.modules.joystick = false
     t.modules.audio = true

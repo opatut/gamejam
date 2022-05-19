@@ -96,46 +96,46 @@ function love.draw()
     -- love.graphics.print("FPS: " .. love.timer.getFPS(), 5, 5)
 end
 
-function love.keypressed(k, u)
+function love.keypressed( key, scancode, isrepeat )
     if k == "f" then
-        -- setFullscreen(not FULLSCREEN)
+        setFullscreen(not FULLSCREEN)
     elseif k == "m" then
-        -- setMute(not MUTE)
+        setMute(not MUTE)
     end
-    stack:keypressed(k, u)
+    stack:keypressed(key, scancode)
 end
 
 function love.mousepressed( x, y, button )
     stack:mousepressed(x, y, button)
 end
 
--- function setFullscreen(fullscreen)
---     _, _, fs = love.graphics.getMode()
---     if fs == fullscreen then return end
+function setFullscreen(fullscreen)
+    _, _, fs = love.graphics.getMode()
+    if fs == fullscreen then return end
 
---     if fullscreen then
---         modes = love.graphics.getModes()
---         table.sort(modes, function(a, b) return a.width*a.height < b.width*b.height end)
---         love.graphics.setMode(modes[#modes].width, modes[#modes].height, true)
---     else
---         love.graphics.setMode(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y, false)
---     end
+    if fullscreen then
+        modes = love.graphics.getModes()
+        table.sort(modes, function(a, b) return a.width*a.height < b.width*b.height end)
+        love.graphics.setMode(modes[#modes].width, modes[#modes].height, true)
+    else
+        love.graphics.setMode(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y, false)
+    end
 
---     local x, y = love.graphics.getMode()
---     SIZE = Vector(x, y)
---     HALFSIZE = SIZE/2
+    local x, y = love.graphics.getMode()
+    SIZE = Vector(x, y)
+    HALFSIZE = SIZE/2
 
---     FULLSCREEN = fullscreen
---     settings:set("fullscreen", fullscreen)
---     settings:save()
--- end
+    FULLSCREEN = fullscreen
+    settings:set("fullscreen", fullscreen)
+    settings:save()
+end
 
--- function setMute(mute)
---     love.audio.setVolume(mute and 0 or 1)
---     MUTE = mute
---     settings:set("mute", mute)
---     settings:save()
--- end
+function setMute(mute)
+    love.audio.setVolume(mute and 0 or 1)
+    MUTE = mute
+    settings:set("mute", mute)
+    settings:save()
+end
 
 function love.quit()
 end

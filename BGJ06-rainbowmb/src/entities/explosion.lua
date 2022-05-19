@@ -19,7 +19,7 @@ function Explosion:__init(position, size)
         250, 10, 10, 100,
         250, 250, 250, 0)
     self.particleSystem:setEmissionRate(10000)
-    self.particleSystem:setParticleLife(self.lifetime * 0.6, self.lifetime)
+    self.particleSystem:setParticleLifetime(self.lifetime * 0.6, self.lifetime)
     self.particleSystem:setSpread(2*math.pi)
     local s = math.log(self.size+1)
     self.particleSystem:setSpeed(200*s, 400*s)
@@ -33,7 +33,7 @@ function Explosion:onUpdate(dt)
 end
 
 function Explosion:onDraw()
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     love.graphics.draw(self.particleSystem)
     love.graphics.setBlendMode("alpha")
 end

@@ -26,7 +26,7 @@ end
 function setLightRendering(enabled, notAdditive)
     if enabled then
         love.graphics.setCanvas(LIGHT_CANVAS)
-        if not notAdditive then love.graphics.setBlendMode("additive") end
+        if not notAdditive then love.graphics.setBlendMode("add") end
     else
         love.graphics.setCanvas()
         love.graphics.setBlendMode("alpha")
@@ -35,10 +35,10 @@ end
 
 function drawLights()
     love.graphics.setColor(255, 255, 255, 180)
-    love.graphics.setBlendMode("multiplicative")
+    love.graphics.setBlendMode("multiply")
     love.graphics.draw(LIGHT_CANVAS, 0, 0)
     love.graphics.setColor(255, 255, 255, 50)
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     love.graphics.draw(LIGHT_CANVAS, 0, 0)
     love.graphics.setBlendMode("alpha")
 end

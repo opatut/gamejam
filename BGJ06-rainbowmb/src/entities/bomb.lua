@@ -24,7 +24,7 @@ function Bomb:onUpdate(dt)
 end
 
 function Bomb:onDraw()
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     for i, c in ipairs(COLORNAMES) do
         local w = resources.images.ring:getWidth()
         local r,g,b = unpack(COLORS[c])

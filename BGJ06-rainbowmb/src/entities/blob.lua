@@ -43,7 +43,7 @@ function Blob:onDraw()
     --     table.insert(points, v.y)
     -- end
     love.graphics.setColor(unpack(COLORS[self.color]))
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     -- love.graphics.polygon("fill", unpack(points))
     love.graphics.circle("fill", self.position.x, self.position.y, 6*beat)
     love.graphics.draw(resources.images.particle, self.position.x, self.position.y, 0, self.size * (1+beat*0.2), self.size * (1+beat*0.2),

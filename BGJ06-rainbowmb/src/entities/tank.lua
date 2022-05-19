@@ -17,7 +17,7 @@ function Tank:__init()
     self.specials = {}
     for i, k in ipairs(COLORNAMES) do
         self.charges[k] = 0.5
-        self.specials[k] = false
+        -- self.specials[k] = false
     end
 
     self.canvas = love.graphics.newCanvas(128, 128)
@@ -59,7 +59,7 @@ function Tank:onUpdate(dt)
     self.rotation = self.physicsObject.body:getAngle()
 
     self.shootTimeout = self.shootTimeout - dt
-    if love.mouse.isDown("l") then
+    if love.mouse.isDown(1) then
         self:shoot()
     end
 
@@ -78,7 +78,7 @@ end
 function Tank:onDraw()
     love.graphics.setColor(255, 255, 255)
 
-    love.graphics.setBlendMode("additive")
+    love.graphics.setBlendMode("add")
     love.graphics.draw(self.canvas, self.position.x, self.position.y, 0, 0.25, 0.25, 64, 64)
     love.graphics.setBlendMode("alpha")
 end

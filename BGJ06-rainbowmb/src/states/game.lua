@@ -174,7 +174,13 @@ function Game:onDraw()
         love.graphics.setColor(255, 255, 255, self.tank.specials[c] and 255 or 100)
         love.graphics.draw(resources.images[c], x+10, y - 110, 0, 0.6, 0.6, 27, 27)
 
-        love.graphics.print(i, x+4, y-95)
+        local s = self.tank.specials[c]
+        if s then 
+            love.graphics.print('[' .. i .. ']', x+4, y-95)
+        else
+            love.graphics.print(i, x+4, y-95)
+        end
+
     end
 
     if self.tank.dead and self.restart <= 0 then
